@@ -21,15 +21,29 @@ import {
     ContainerConfiguration,
     DefaultTypes,
     editLabelFeature,
+    GEdge,
     GLabel,
     GLabelView,
+    GNode,
     initializeDiagramContainer,
     LogLevel,
+    PolylineEdgeView,
     TYPES
 } from '@eclipse-glsp/client';
 import 'balloon-css/balloon.min.css';
 import { Container, ContainerModule } from 'inversify';
 import '../css/diagram.css';
+import { TaskListTypes } from './tasklist-types';
+import {
+    ApiNodeView,
+    AutoNodeView,
+    DecisionNodeView,
+    DecisionTableNodeView,
+    EndNodeView,
+    StartNodeView,
+    SubProcessNodeView,
+    TaskNodeView
+} from './tasklist-views';
 
 const taskListDiagramModule = new ContainerModule((bind, unbind, isBound, rebind) => {
     rebind(TYPES.ILogger).to(ConsoleLogger).inSingletonScope();
@@ -37,6 +51,19 @@ const taskListDiagramModule = new ContainerModule((bind, unbind, isBound, rebind
     const context = { bind, unbind, isBound, rebind };
     configureDefaultModelElements(context);
     configureModelElement(context, DefaultTypes.LABEL, GLabel, GLabelView, { enable: [editLabelFeature] });
+
+    // Configure different node types
+    configureModelElement(context, TaskListTypes.TASK_NODE, GNode, TaskNodeView);
+    configureModelElement(context, TaskListTypes.DECISION_NODE, GNode, DecisionNodeView);
+    configureModelElement(context, TaskListTypes.START_NODE, GNode, StartNodeView);
+    configureModelElement(context, TaskListTypes.END_NODE, GNode, EndNodeView);
+    configureModelElement(context, TaskListTypes.API_NODE, GNode, ApiNodeView);
+    configureModelElement(context, TaskListTypes.DECISION_TABLE_NODE, GNode, DecisionTableNodeView);
+    configureModelElement(context, TaskListTypes.AUTO_NODE, GNode, AutoNodeView);
+    configureModelElement(context, TaskListTypes.SUB_PROCESS_NODE, GNode, SubProcessNodeView);
+
+    // Configure edge type
+    configureModelElement(context, TaskListTypes.TRANSITION_EDGE, GEdge, PolylineEdgeView);
 });
 
 export function initializeTasklistDiagramContainer(container: Container, ...containerConfiguration: ContainerConfiguration): Container {

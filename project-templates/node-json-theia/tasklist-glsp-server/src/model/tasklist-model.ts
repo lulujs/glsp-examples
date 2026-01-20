@@ -36,13 +36,47 @@ export namespace TaskList {
 export interface Task {
     id: string;
     name: string;
+    type: TaskType;
     position: { x: number; y: number };
     size?: { width: number; height: number };
+}
+
+export enum TaskType {
+    TASK = 'task',
+    DECISION = 'decision',
+    START = 'start',
+    END = 'end',
+    API = 'api',
+    DECISION_TABLE = 'decisionTable',
+    AUTO = 'auto',
+    SUB_PROCESS = 'subProcess'
 }
 
 export namespace Task {
     export function is(object: any): object is Task {
         return AnyObject.is(object) && hasStringProp(object, 'id') && hasStringProp(object, 'name') && hasObjectProp(object, 'position');
+    }
+
+    export function getDefaultSize(type: TaskType): { width: number; height: number } {
+        switch (type) {
+            case TaskType.TASK:
+                return { width: 100, height: 50 };
+            case TaskType.DECISION:
+                return { width: 80, height: 80 };
+            case TaskType.START:
+            case TaskType.END:
+                return { width: 90, height: 60 };
+            case TaskType.API:
+                return { width: 80, height: 80 };
+            case TaskType.DECISION_TABLE:
+                return { width: 90, height: 90 };
+            case TaskType.AUTO:
+                return { width: 70, height: 70 };
+            case TaskType.SUB_PROCESS:
+                return { width: 100, height: 80 };
+            default:
+                return { width: 100, height: 50 };
+        }
     }
 }
 

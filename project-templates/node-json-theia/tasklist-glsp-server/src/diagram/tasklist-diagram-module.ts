@@ -26,7 +26,8 @@ import {
     LabelEditValidator,
     ModelState,
     OperationHandlerConstructor,
-    SourceModelStorage
+    SourceModelStorage,
+    ToolPaletteItemProvider
 } from '@eclipse-glsp/server';
 import { injectable } from 'inversify';
 import { CreateTaskHandler } from '../handler/create-task-node-handler';
@@ -35,6 +36,7 @@ import { DeleteElementHandler } from '../handler/delete-element-handler';
 import { TaskListApplyLabelEditHandler } from '../handler/tasklist-apply-label-edit-handler';
 import { TaskListChangeBoundsHandler } from '../handler/tasklist-change-bounds-handler';
 import { TaskListLabelEditValidator } from '../handler/tasklist-label-edit-validator';
+import { TaskListToolPaletteProvider } from '../handler/tasklist-tool-palette-provider';
 import { TaskListGModelFactory } from '../model/tasklist-gmodel-factory';
 import { TaskListModelIndex } from '../model/tasklist-model-index';
 import { TaskListModelState } from '../model/tasklist-model-state';
@@ -82,5 +84,9 @@ export class TaskListDiagramModule extends DiagramModule {
 
     protected override bindLabelEditValidator(): BindingTarget<LabelEditValidator> | undefined {
         return TaskListLabelEditValidator;
+    }
+
+    protected override bindToolPaletteItemProvider(): BindingTarget<ToolPaletteItemProvider> | undefined {
+        return TaskListToolPaletteProvider;
     }
 }

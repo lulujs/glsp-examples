@@ -14,15 +14,16 @@
  *
  * SPDX-License-Identifier: EPL-2.0 OR GPL-2.0 WITH Classpath-exception-2.0 OR MIT
  ********************************************************************************/
-import { Command, CreateEdgeOperation, DefaultTypes, JsonCreateEdgeOperationHandler, MaybePromise } from '@eclipse-glsp/server';
+import { Command, CreateEdgeOperation, JsonCreateEdgeOperationHandler, MaybePromise } from '@eclipse-glsp/server';
 import { inject, injectable } from 'inversify';
 import * as uuid from 'uuid';
 import { Transition } from '../model/tasklist-model';
 import { TaskListModelState } from '../model/tasklist-model-state';
+import { TaskListTypes } from '../model/tasklist-types';
 
 @injectable()
 export class CreateTransitionHandler extends JsonCreateEdgeOperationHandler {
-    readonly elementTypeIds = [DefaultTypes.EDGE];
+    readonly elementTypeIds = [TaskListTypes.TRANSITION_EDGE];
 
     @inject(TaskListModelState)
     protected override modelState: TaskListModelState;

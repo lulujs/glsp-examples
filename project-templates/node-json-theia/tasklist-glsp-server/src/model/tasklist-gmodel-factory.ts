@@ -16,8 +16,9 @@
  ********************************************************************************/
 import { GEdge, GGraph, GLabel, GModelFactory, GNode } from '@eclipse-glsp/server';
 import { inject, injectable } from 'inversify';
-import { Task, Transition } from './tasklist-model';
+import { Task, TaskType, Transition } from './tasklist-model';
 import { TaskListModelState } from './tasklist-model-state';
+import { TaskListTypes } from './tasklist-types';
 
 @injectable()
 export class TaskListGModelFactory implements GModelFactory {
@@ -38,9 +39,13 @@ export class TaskListGModelFactory implements GModelFactory {
     }
 
     protected createTaskNode(task: Task): GNode {
+        const nodeType = this.getNodeType(task.type);
+        const cssClass = this.getNodeCssClass(task.type);
+
         const builder = GNode.builder()
             .id(task.id)
-            .addCssClass('tasklist-node')
+            .type(nodeType)
+            .addCssClass(cssClass)
             .add(GLabel.builder().text(task.name).id(`${task.id}_label`).build())
             .layout('hbox')
             .addLayoutOption('paddingLeft', 5)
@@ -48,14 +53,64 @@ export class TaskListGModelFactory implements GModelFactory {
 
         if (task.size) {
             builder.addLayoutOptions({ prefWidth: task.size.width, prefHeight: task.size.height });
+        } else {
+            const defaultSize = Task.getDefaultSize(task.type);
+            builder.addLayoutOptions({ prefWidth: defaultSize.width, prefHeight: defaultSize.height });
         }
 
         return builder.build();
     }
 
+    protected getNodeType(taskType: TaskType): string {
+        switch (taskType) {
+            case TaskType.TASK:
+                return TaskListTypes.TASK_NODE;
+            case TaskType.DECISION:
+                return TaskListTypes.DECISION_NODE;
+            case TaskType.START:
+                return TaskListTypes.START_NODE;
+            case TaskType.END:
+                return TaskListTypes.END_NODE;
+            case TaskType.API:
+                return TaskListTypes.API_NODE;
+            case TaskType.DECISION_TABLE:
+                return TaskListTypes.DECISION_TABLE_NODE;
+            case TaskType.AUTO:
+                return TaskListTypes.AUTO_NODE;
+            case TaskType.SUB_PROCESS:
+                return TaskListTypes.SUB_PROCESS_NODE;
+            default:
+                return TaskListTypes.TASK_NODE;
+        }
+    }
+
+    protected getNodeCssClass(taskType: TaskType): string {
+        switch (taskType) {
+            case TaskType.TASK:
+                return 'tasklist-task';
+            case TaskType.DECISION:
+                return 'tasklist-decision';
+            case TaskType.START:
+                return 'tasklist-start';
+            case TaskType.END:
+                return 'tasklist-end';
+            case TaskType.API:
+                return 'tasklist-api';
+            case TaskType.DECISION_TABLE:
+                return 'tasklist-decision-table';
+            case TaskType.AUTO:
+                return 'tasklist-auto';
+            case TaskType.SUB_PROCESS:
+                return 'tasklist-subprocess';
+            default:
+                return 'tasklist-task';
+        }
+    }
+
     protected createTransitionEdge(transition: Transition): GEdge {
         return GEdge.builder() //
             .id(transition.id)
+            .type(TaskListTypes.TRANSITION_EDGE)
             .addCssClass('tasklist-transition')
             .sourceId(transition.sourceTaskId)
             .targetId(transition.targetTaskId)

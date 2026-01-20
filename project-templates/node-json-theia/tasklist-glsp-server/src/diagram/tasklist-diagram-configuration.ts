@@ -15,7 +15,6 @@
  * SPDX-License-Identifier: EPL-2.0 OR GPL-2.0 WITH Classpath-exception-2.0 OR MIT
  ********************************************************************************/
 import {
-    DefaultTypes,
     DiagramConfiguration,
     EdgeTypeHint,
     getDefaultMapping,
@@ -25,6 +24,7 @@ import {
     ShapeTypeHint
 } from '@eclipse-glsp/server';
 import { injectable } from 'inversify';
+import { TaskListTypes } from '../model/tasklist-types';
 
 @injectable()
 export class TaskListDiagramConfiguration implements DiagramConfiguration {
@@ -39,7 +39,56 @@ export class TaskListDiagramConfiguration implements DiagramConfiguration {
     get shapeTypeHints(): ShapeTypeHint[] {
         return [
             {
-                elementTypeId: DefaultTypes.NODE,
+                elementTypeId: TaskListTypes.TASK_NODE,
+                deletable: true,
+                reparentable: false,
+                repositionable: true,
+                resizable: true
+            },
+            {
+                elementTypeId: TaskListTypes.DECISION_NODE,
+                deletable: true,
+                reparentable: false,
+                repositionable: true,
+                resizable: true
+            },
+            {
+                elementTypeId: TaskListTypes.START_NODE,
+                deletable: true,
+                reparentable: false,
+                repositionable: true,
+                resizable: false
+            },
+            {
+                elementTypeId: TaskListTypes.END_NODE,
+                deletable: true,
+                reparentable: false,
+                repositionable: true,
+                resizable: false
+            },
+            {
+                elementTypeId: TaskListTypes.API_NODE,
+                deletable: true,
+                reparentable: false,
+                repositionable: true,
+                resizable: true
+            },
+            {
+                elementTypeId: TaskListTypes.DECISION_TABLE_NODE,
+                deletable: true,
+                reparentable: false,
+                repositionable: true,
+                resizable: true
+            },
+            {
+                elementTypeId: TaskListTypes.AUTO_NODE,
+                deletable: true,
+                reparentable: false,
+                repositionable: true,
+                resizable: true
+            },
+            {
+                elementTypeId: TaskListTypes.SUB_PROCESS_NODE,
                 deletable: true,
                 reparentable: false,
                 repositionable: true,
@@ -51,12 +100,28 @@ export class TaskListDiagramConfiguration implements DiagramConfiguration {
     get edgeTypeHints(): EdgeTypeHint[] {
         return [
             {
-                elementTypeId: DefaultTypes.EDGE,
+                elementTypeId: TaskListTypes.TRANSITION_EDGE,
                 deletable: true,
                 repositionable: false,
                 routable: false,
-                sourceElementTypeIds: [DefaultTypes.NODE],
-                targetElementTypeIds: [DefaultTypes.NODE]
+                sourceElementTypeIds: [
+                    TaskListTypes.TASK_NODE,
+                    TaskListTypes.DECISION_NODE,
+                    TaskListTypes.START_NODE,
+                    TaskListTypes.API_NODE,
+                    TaskListTypes.DECISION_TABLE_NODE,
+                    TaskListTypes.AUTO_NODE,
+                    TaskListTypes.SUB_PROCESS_NODE
+                ],
+                targetElementTypeIds: [
+                    TaskListTypes.TASK_NODE,
+                    TaskListTypes.DECISION_NODE,
+                    TaskListTypes.END_NODE,
+                    TaskListTypes.API_NODE,
+                    TaskListTypes.DECISION_TABLE_NODE,
+                    TaskListTypes.AUTO_NODE,
+                    TaskListTypes.SUB_PROCESS_NODE
+                ]
             }
         ];
     }

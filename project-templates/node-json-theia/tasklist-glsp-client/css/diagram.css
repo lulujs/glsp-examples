@@ -25,6 +25,143 @@ svg {
     fill: inherit;
 }
 
+/* Task Node Styles */
+.tasklist-task {
+    fill: #dae8fc;
+    stroke: #6c8ebf;
+    stroke-width: 2;
+}
+
+.tasklist-task.selected {
+    stroke: #007acc;
+    stroke-width: 3;
+}
+
+/* Decision Node Styles */
+.tasklist-decision {
+    fill: #dae8fc;
+    stroke: #6c8ebf;
+    stroke-width: 2;
+}
+
+.tasklist-decision.selected {
+    stroke: #007acc;
+    stroke-width: 3;
+}
+
+/* 
+	Begin: { fill: "#FFF2CC", stroke: "#D6B656" },
+									End: { fill: "#FFF2CC", stroke: "#D6B656" },
+									DecisionTable: { fill: "#D5E8D4", stroke: "#82B366" },
+									Process: { fill: "#DAE8FC", stroke: "#6C8EBF" },
+									Decision: { fill: "#DAE8FC", stroke: "#6C8EBF" },
+									API: { fill: "#DAE8FC", stroke: "#6C8EBF" },
+									ParallelGateway:{ fill: "#DAE8FC", stroke: "#6C8EBF" },
+									Exception: { fill: "#F8CECC", stroke: "#B85450" },
+									SubProcess: { fill: "#FADEB9", stroke: "#D7AC61" },
+									Auto: { fill: "#F5F5F5", stroke: "#666666" }
+
+*/
+/* Start Node Styles */
+.tasklist-start {
+    fill: #fff2cc;
+    stroke: #d6b656;
+    stroke-width: 2;
+}
+
+.tasklist-start.selected {
+    stroke: #007acc;
+    stroke-width: 3;
+}
+
+/* End Node Styles */
+.tasklist-end {
+    fill: #fff2cc;
+    stroke: #d6b656;
+    stroke-width: 2;
+}
+
+.tasklist-end-inner {
+    fill: #fff;
+    stroke: none;
+}
+
+.tasklist-end.selected {
+    stroke: #007acc;
+    stroke-width: 3;
+}
+
+/* API Node Styles */
+.tasklist-api {
+    fill: #dae8fc;
+    stroke: #6c8ebf;
+    stroke-width: 2;
+}
+
+.tasklist-api.selected {
+    stroke: #007acc;
+    stroke-width: 3;
+}
+
+/* Decision Table Node Styles */
+.tasklist-decision-table {
+    fill: #d5e8d4;
+    stroke: #82b366;
+    stroke-width: 2;
+}
+
+.tasklist-decision-table.selected {
+    stroke: #007acc;
+    stroke-width: 3;
+}
+
+/* Auto Node Styles */
+.tasklist-auto {
+    fill: #f5f5f5;
+    stroke: #666666;
+    stroke-width: 2;
+}
+
+.tasklist-auto.selected {
+    stroke: #007acc;
+    stroke-width: 3;
+}
+
+/* SubProcess Node Styles */
+.tasklist-subprocess {
+    fill: #fadeb9;
+    stroke: #d7ac61;
+    stroke-width: 2;
+}
+
+.tasklist-subprocess.selected {
+    stroke: #007acc;
+    stroke-width: 3;
+}
+
+/* 所有节点中的文本居中样式 */
+.centered-text {
+    text-anchor: middle;
+    dominant-baseline: central;
+    font-family: Arial, sans-serif;
+    font-size: 12px;
+    fill: #333;
+}
+
+/* Transition Edge Styles */
+.tasklist-transition {
+    stroke: #333;
+    stroke-width: 2;
+    fill: none;
+    marker-end: url(#arrow);
+}
+
+.tasklist-transition.selected {
+    stroke: #007acc;
+    stroke-width: 3;
+}
+
+/* Legacy support */
 .tasklist-node > .sprotty-node {
     fill: #f1bd6c;
 }
