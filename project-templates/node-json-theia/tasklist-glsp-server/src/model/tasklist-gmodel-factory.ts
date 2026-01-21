@@ -104,13 +104,21 @@ export class TaskListGModelFactory implements GModelFactory {
     }
 
     protected createTransitionEdge(transition: Transition): GEdge {
-        return GEdge.builder() //
+        const builder = GEdge.builder() //
             .id(transition.id)
             .type(TaskListTypes.TRANSITION_EDGE)
             .addCssClass('tasklist-transition')
             .sourceId(transition.sourceTaskId)
             .targetId(transition.targetTaskId)
-            .routerKind('manhattan') // 使用曼哈顿路由
-            .build();
+            .routerKind('manhattan'); // 使用曼哈顿路由
+
+        // 如果有保存的路由点，则添加它们
+        if (transition.routingPoints && transition.routingPoints.length > 0) {
+            transition.routingPoints.forEach(point => {
+                builder.addRoutingPoint(point);
+            });
+        }
+
+        return builder.build();
     }
 }

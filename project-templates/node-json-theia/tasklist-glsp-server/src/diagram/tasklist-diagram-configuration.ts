@@ -102,8 +102,8 @@ export class TaskListDiagramConfiguration implements DiagramConfiguration {
             {
                 elementTypeId: TaskListTypes.TRANSITION_EDGE,
                 deletable: true,
-                repositionable: false,
-                routable: false,
+                repositionable: true, // 允许移动边的端点
+                routable: true, // 允许编辑路由点和重新连接
                 sourceElementTypeIds: [
                     TaskListTypes.TASK_NODE,
                     TaskListTypes.DECISION_NODE,

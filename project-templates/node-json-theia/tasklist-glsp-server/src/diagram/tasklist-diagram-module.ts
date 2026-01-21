@@ -35,7 +35,9 @@ import { CreateTransitionHandler } from '../handler/create-transition-handler';
 import { DeleteElementHandler } from '../handler/delete-element-handler';
 import { TaskListApplyLabelEditHandler } from '../handler/tasklist-apply-label-edit-handler';
 import { TaskListChangeBoundsHandler } from '../handler/tasklist-change-bounds-handler';
+import { TaskListChangeRoutingPointsHandler } from '../handler/tasklist-change-routing-points-handler';
 import { TaskListLabelEditValidator } from '../handler/tasklist-label-edit-validator';
+import { TaskListReconnectEdgeHandler } from '../handler/tasklist-reconnect-edge-handler';
 import { TaskListToolPaletteProvider } from '../handler/tasklist-tool-palette-provider';
 import { TaskListGModelFactory } from '../model/tasklist-gmodel-factory';
 import { TaskListModelIndex } from '../model/tasklist-model-index';
@@ -73,7 +75,9 @@ export class TaskListDiagramModule extends DiagramModule {
         binding.add(CreateTaskHandler);
         binding.add(CreateTransitionHandler);
         binding.add(TaskListChangeBoundsHandler);
+        binding.add(TaskListChangeRoutingPointsHandler);
         binding.add(TaskListApplyLabelEditHandler);
+        binding.add(TaskListReconnectEdgeHandler);
         binding.add(DeleteElementHandler);
     }
 
