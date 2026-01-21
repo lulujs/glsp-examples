@@ -29,12 +29,13 @@ import {
     initializeDiagramContainer,
     LogLevel,
     overrideModelElement,
-    PolylineEdgeView,
     TYPES
 } from '@eclipse-glsp/client';
 import 'balloon-css/balloon.min.css';
 import { Container, ContainerModule } from 'inversify';
 import '../css/diagram.css';
+import { TasklistEdgeView } from './tasklist-edge-views';
+import { TasklistRouterModule } from './tasklist-router-module';
 import { TaskListTypes } from './tasklist-types';
 import {
     ApiNodeView,
@@ -69,10 +70,10 @@ const taskListDiagramModule = new ContainerModule((bind, unbind, isBound, rebind
     configureModelElement(context, TaskListTypes.AUTO_NODE, GNode, AutoNodeView);
     configureModelElement(context, TaskListTypes.SUB_PROCESS_NODE, GNode, SubProcessNodeView);
 
-    // Configure edge type
-    configureModelElement(context, TaskListTypes.TRANSITION_EDGE, GEdge, PolylineEdgeView);
+    // Configure edge type with Manhattan routing support
+    configureModelElement(context, TaskListTypes.TRANSITION_EDGE, GEdge, TasklistEdgeView);
 });
 
 export function initializeTasklistDiagramContainer(container: Container, ...containerConfiguration: ContainerConfiguration): Container {
-    return initializeDiagramContainer(container, taskListDiagramModule, ...containerConfiguration);
+    return initializeDiagramContainer(container, taskListDiagramModule, TasklistRouterModule, ...containerConfiguration);
 }

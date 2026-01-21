@@ -42,6 +42,8 @@ export class TaskListGModelFactory implements GModelFactory {
         const nodeType = this.getNodeType(task.type);
         const cssClass = this.getNodeCssClass(task.type);
 
+        const size = task.size || Task.getDefaultSize(task.type);
+
         const builder = GNode.builder()
             .id(task.id)
             .type(nodeType)
@@ -49,14 +51,8 @@ export class TaskListGModelFactory implements GModelFactory {
             .add(GLabel.builder().text(task.name).id(`${task.id}_label`).build())
             .layout('hbox')
             .addLayoutOption('paddingLeft', 5)
-            .position(task.position);
-
-        if (task.size) {
-            builder.addLayoutOptions({ prefWidth: task.size.width, prefHeight: task.size.height });
-        } else {
-            const defaultSize = Task.getDefaultSize(task.type);
-            builder.addLayoutOptions({ prefWidth: defaultSize.width, prefHeight: defaultSize.height });
-        }
+            .position(task.position)
+            .size(size.width, size.height); // 明确设置节点大小
 
         return builder.build();
     }
@@ -114,6 +110,7 @@ export class TaskListGModelFactory implements GModelFactory {
             .addCssClass('tasklist-transition')
             .sourceId(transition.sourceTaskId)
             .targetId(transition.targetTaskId)
+            .routerKind('manhattan') // 使用曼哈顿路由
             .build();
     }
 }

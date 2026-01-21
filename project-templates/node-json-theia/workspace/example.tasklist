@@ -2,103 +2,77 @@
   "id": "d63b4a87-ca5e-41f8-b800-83ff4947a1ce",
   "tasks": [
     {
-      "id": "start-node-1",
-      "name": "Start",
+      "id": "bcee3f47-56df-4224-8417-535ae610e34e",
+      "name": "Start0",
       "type": "start",
       "position": {
-        "x": 100,
-        "y": 50
+        "x": 497.35901285970374,
+        "y": -46.62650987509756
       },
       "size": {
-        "width": 60,
+        "width": 120,
         "height": 60
       }
     },
     {
-      "id": "6b068132-c0a9-4a9e-ac60-7cadce23079a",
-      "name": "First Task",
-      "type": "task",
-      "position": {
-        "x": 215.26822788729396,
-        "y": 78
-      },
-      "size": {
-        "width": 266,
-        "height": 103
-      }
-    },
-    {
-      "id": "decision-node-1",
-      "name": "Decision?",
-      "type": "decision",
-      "position": {
-        "x": 617,
-        "y": 226
-      },
-      "size": {
-        "width": 63.82939658965563,
-        "height": 68.93590292976432
-      }
-    },
-    {
-      "id": "ad877ad8-b849-4dc4-b4ca-a5f55413864c",
-      "name": "Second Task",
-      "type": "task",
-      "position": {
-        "x": 579,
-        "y": 466
-      },
-      "size": {
-        "width": 100,
-        "height": 50
-      }
-    },
-    {
-      "id": "3564ed38-4b63-485d-a7f0-75461a5ef50f",
-      "name": "Third Task",
-      "type": "task",
-      "position": {
-        "x": 278,
-        "y": 300
-      },
-      "size": {
-        "width": 100,
-        "height": 50
-      }
-    },
-    {
-      "id": "end-node-1",
-      "name": "End",
+      "id": "dbb040d0-2156-4196-8937-65a1ad78b50f",
+      "name": "End1",
       "type": "end",
       "position": {
-        "x": 200,
-        "y": 400
+        "x": 385.4478229137461,
+        "y": 307.94359688437135
       },
       "size": {
-        "width": 60,
+        "width": 120,
         "height": 60
       }
     },
     {
-      "id": "edceb555-9a1c-4054-9c19-06bd275bb0ac",
-      "name": "Task6",
-      "type": "task",
+      "id": "69e5e492-6093-46fe-b7fa-6a337f5c8155",
+      "name": "Start2",
+      "type": "start",
       "position": {
-        "x": 761.734375,
-        "y": 144
+        "x": 797.6355720216292,
+        "y": 1.0188482207060972
       },
       "size": {
-        "width": 100,
-        "height": 50
+        "width": 120,
+        "height": 60
       }
     },
     {
-      "id": "8f511c2f-79e0-4eba-93d1-7a73b7df4eff",
-      "name": "SubProcess7",
-      "type": "subProcess",
+      "id": "797b997e-fea0-48e4-aa99-0d1900be52eb",
+      "name": "Task3",
+      "type": "task",
       "position": {
-        "x": 1110.8241270253454,
-        "y": 427.2831656473878
+        "x": 763.2865929293056,
+        "y": 150.60311200985714
+      },
+      "size": {
+        "width": 120,
+        "height": 60
+      }
+    },
+    {
+      "id": "4f331bf0-60fb-4812-829d-0946a62c00a8",
+      "name": "End4",
+      "type": "end",
+      "position": {
+        "x": 1042.5105520023874,
+        "y": 262.5143019558145
+      },
+      "size": {
+        "width": 120,
+        "height": 60
+      }
+    },
+    {
+      "id": "0e5057cd-02cf-41b4-9731-56210086ab67",
+      "name": "End5",
+      "type": "end",
+      "position": {
+        "x": 835.3086458648226,
+        "y": 334.5363548913317
       },
       "size": {
         "width": 120,
@@ -108,39 +82,24 @@
   ],
   "transitions": [
     {
-      "id": "start-to-first",
-      "sourceTaskId": "start-node-1",
-      "targetTaskId": "6b068132-c0a9-4a9e-ac60-7cadce23079a"
+      "id": "c2cd4fea-0246-4348-8a56-5c704ebbef5a",
+      "sourceTaskId": "bcee3f47-56df-4224-8417-535ae610e34e",
+      "targetTaskId": "dbb040d0-2156-4196-8937-65a1ad78b50f"
     },
     {
-      "id": "first-to-decision",
-      "sourceTaskId": "6b068132-c0a9-4a9e-ac60-7cadce23079a",
-      "targetTaskId": "decision-node-1"
+      "id": "50ae49c3-0bc7-4073-9d65-ef4ac2aa774f",
+      "sourceTaskId": "69e5e492-6093-46fe-b7fa-6a337f5c8155",
+      "targetTaskId": "797b997e-fea0-48e4-aa99-0d1900be52eb"
     },
     {
-      "id": "decision-to-second",
-      "sourceTaskId": "decision-node-1",
-      "targetTaskId": "ad877ad8-b849-4dc4-b4ca-a5f55413864c"
+      "id": "23878061-7670-4435-8e5a-923d3bd16aba",
+      "sourceTaskId": "797b997e-fea0-48e4-aa99-0d1900be52eb",
+      "targetTaskId": "4f331bf0-60fb-4812-829d-0946a62c00a8"
     },
     {
-      "id": "decision-to-third",
-      "sourceTaskId": "decision-node-1",
-      "targetTaskId": "3564ed38-4b63-485d-a7f0-75461a5ef50f"
-    },
-    {
-      "id": "second-to-end",
-      "sourceTaskId": "ad877ad8-b849-4dc4-b4ca-a5f55413864c",
-      "targetTaskId": "end-node-1"
-    },
-    {
-      "id": "third-to-end",
-      "sourceTaskId": "3564ed38-4b63-485d-a7f0-75461a5ef50f",
-      "targetTaskId": "end-node-1"
-    },
-    {
-      "id": "bf11c5f9-1e19-4b4d-8db7-a7834124f267",
-      "sourceTaskId": "edceb555-9a1c-4054-9c19-06bd275bb0ac",
-      "targetTaskId": "decision-node-1"
+      "id": "8e239c3c-d2e2-455a-8e7a-998f742f1f20",
+      "sourceTaskId": "797b997e-fea0-48e4-aa99-0d1900be52eb",
+      "targetTaskId": "0e5057cd-02cf-41b4-9731-56210086ab67"
     }
   ]
 }

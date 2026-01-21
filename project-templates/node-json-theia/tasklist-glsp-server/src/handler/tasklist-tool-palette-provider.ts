@@ -32,31 +32,31 @@ export class TaskListToolPaletteProvider extends ToolPaletteItemProvider {
                     {
                         id: TaskListTypes.START_NODE,
                         label: '开始',
-                        sortString: 'C',
+                        sortString: 'A',
                         actions: [TriggerNodeCreationAction.create(TaskListTypes.START_NODE)]
                     },
                     {
                         id: TaskListTypes.END_NODE,
                         label: '结束',
-                        sortString: 'D',
+                        sortString: 'B',
                         actions: [TriggerNodeCreationAction.create(TaskListTypes.END_NODE)]
                     },
                     {
                         id: TaskListTypes.END_NODE,
                         label: '异常',
-                        sortString: 'Z',
+                        sortString: 'C',
                         actions: [TriggerNodeCreationAction.create(TaskListTypes.END_NODE)]
                     },
                     {
                         id: TaskListTypes.TASK_NODE,
                         label: '流程',
-                        sortString: 'A',
+                        sortString: 'D',
                         actions: [TriggerNodeCreationAction.create(TaskListTypes.TASK_NODE)]
                     },
                     {
                         id: TaskListTypes.DECISION_NODE,
                         label: '分支',
-                        sortString: 'B',
+                        sortString: 'E',
                         actions: [TriggerNodeCreationAction.create(TaskListTypes.DECISION_NODE)]
                     },
 
@@ -70,19 +70,19 @@ export class TaskListToolPaletteProvider extends ToolPaletteItemProvider {
                     {
                         id: TaskListTypes.SUB_PROCESS_NODE,
                         label: '子流程',
-                        sortString: 'H',
+                        sortString: 'G',
                         actions: [TriggerNodeCreationAction.create(TaskListTypes.SUB_PROCESS_NODE)]
                     },
                     {
                         id: TaskListTypes.API_NODE,
                         label: 'API',
-                        sortString: 'E',
+                        sortString: 'H',
                         actions: [TriggerNodeCreationAction.create(TaskListTypes.API_NODE)]
                     },
                     {
                         id: TaskListTypes.AUTO_NODE,
                         label: '自动化',
-                        sortString: 'G',
+                        sortString: 'I',
                         actions: [TriggerNodeCreationAction.create(TaskListTypes.AUTO_NODE)]
                     }
                 ]
