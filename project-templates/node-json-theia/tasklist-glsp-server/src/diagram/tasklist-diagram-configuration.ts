@@ -43,14 +43,14 @@ export class TaskListDiagramConfiguration implements DiagramConfiguration {
                 deletable: true,
                 reparentable: false,
                 repositionable: true,
-                resizable: true
+                resizable: false
             },
             {
                 elementTypeId: TaskListTypes.DECISION_NODE,
                 deletable: true,
                 reparentable: false,
                 repositionable: true,
-                resizable: true
+                resizable: false
             },
             {
                 elementTypeId: TaskListTypes.START_NODE,
@@ -71,28 +71,28 @@ export class TaskListDiagramConfiguration implements DiagramConfiguration {
                 deletable: true,
                 reparentable: false,
                 repositionable: true,
-                resizable: true
+                resizable: false
             },
             {
                 elementTypeId: TaskListTypes.DECISION_TABLE_NODE,
                 deletable: true,
                 reparentable: false,
                 repositionable: true,
-                resizable: true
+                resizable: false
             },
             {
                 elementTypeId: TaskListTypes.AUTO_NODE,
                 deletable: true,
                 reparentable: false,
                 repositionable: true,
-                resizable: true
+                resizable: false
             },
             {
                 elementTypeId: TaskListTypes.SUB_PROCESS_NODE,
                 deletable: true,
                 reparentable: false,
                 repositionable: true,
-                resizable: true
+                resizable: false
             }
         ];
     }

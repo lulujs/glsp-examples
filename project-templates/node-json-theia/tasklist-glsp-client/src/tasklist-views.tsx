@@ -22,19 +22,26 @@ export class WorkflowGraphView extends GGraphView {
         const transform = `scale(${model.zoom}) translate(${-model.scroll.x},${-model.scroll.y})`;
         const graph: any = (
             <svg class-sprotty-graph={true}>
+                <defs>
+                    <pattern id='grid' width='20' height='20' patternUnits='userSpaceOnUse'>
+                        <path d='M 20 0 L 0 0 0 20' fill='none' stroke='#e0e0e0' stroke-width='1' />
+                    </pattern>
+                </defs>
+                <rect width='100%' height='100%' fill='url(#grid)' />
                 <g transform={transform}>{context.renderChildren(model, { edgeRouting }) as ReactNode}</g>
             </svg>
         );
-        // 应用网格样式和渲染样式
+        // 应用渲染样式
         if (graph.data) {
-            graph.data.style = { ...graph.data.style, ...this.getGridStyle(model, context), ...this.renderStyle(context) };
+            graph.data.style = { ...graph.data.style, ...this.renderStyle(context) };
         }
         return graph;
     }
 
     protected renderStyle(context: RenderingContext): any {
         return {
-            height: '100%'
+            height: '100%',
+            width: '100%'
         };
     }
 }
@@ -89,15 +96,33 @@ function generateSubProcessHexagonPoints(centerX: number, centerY: number, radiu
     return points.join(' ');
 }
 
-// 生成七边形的点坐标
-function generateHeptagonPoints(centerX: number, centerY: number, radius: number): string {
-    const points = [];
-    for (let i = 0; i < 7; i++) {
-        const angle = ((2 * Math.PI) / 7) * i - Math.PI / 2; // 从顶部开始
-        const x = centerX + radius * Math.cos(angle);
-        const y = centerY + radius * Math.sin(angle);
-        points.push(`${x},${y}`);
-    }
+// 生成八边形的点坐标 - 用于DecisionTable节点
+// 顶部水平，左右斜边较长，垂直边较短
+function generateDecisionTableOctagonPoints(
+    centerX: number,
+    centerY: number,
+    width: number,
+    height: number,
+    cornerCutSize: number = 20
+): string {
+    const w = width / 2;
+    const h = height / 2;
+
+    // 确保切角不会超过节点尺寸的一半
+    const maxCut = Math.min(w, h) * 0.8;
+    const cornerCut = Math.min(cornerCutSize, maxCut);
+
+    const points = [
+        `${centerX - w + cornerCut},${centerY - h}`, // 左上角切角后
+        `${centerX + w - cornerCut},${centerY - h}`, // 右上角切角前
+        `${centerX + w},${centerY - h + cornerCut}`, // 右上角切角后
+        `${centerX + w},${centerY + h - cornerCut}`, // 右下角切角前
+        `${centerX + w - cornerCut},${centerY + h}`, // 右下角切角后
+        `${centerX - w + cornerCut},${centerY + h}`, // 左下角切角前
+        `${centerX - w},${centerY + h - cornerCut}`, // 左下角切角后
+        `${centerX - w},${centerY - h + cornerCut}` // 左上角切角前
+    ];
+
     return points.join(' ');
 }
 
@@ -236,19 +261,18 @@ export class DecisionTableNodeView extends RectangularNodeView {
     override render(node: GNode, context: RenderingContext): VNode {
         const centerX = node.size.width / 2;
         const centerY = node.size.height / 2;
-        const radius = Math.min(centerX, centerY) * 0.8; // 七边形半径
 
-        const heptagon = svg('polygon', {
+        const octagon = svg('polygon', {
             class: { 'tasklist-decision-table': true, selected: node.selected, mouseover: node.hoverFeedback },
             attrs: {
-                points: generateHeptagonPoints(centerX, centerY, radius)
+                points: generateDecisionTableOctagonPoints(centerX, centerY, node.size.width, node.size.height, 20) // 设置为40像素切角
             }
         });
 
         const children = context.renderChildren(node);
         const centeredChildren = centerTextInNode(children, centerX, centerY);
 
-        const elements = [heptagon];
+        const elements = [octagon];
         elements.push(...centeredChildren);
         const vnode: VNode = svg('g', {}, elements as any);
         return vnode;

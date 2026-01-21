@@ -25,80 +25,77 @@ export class TaskListToolPaletteProvider extends ToolPaletteItemProvider {
         return [
             {
                 id: 'tasklist-nodes',
-                label: 'Nodes',
-                icon: 'fa-wrench',
+                label: '节点',
                 sortString: 'A',
                 actions: [],
                 children: [
                     {
-                        id: TaskListTypes.TASK_NODE,
-                        label: 'Task',
-                        icon: 'fa-square',
-                        sortString: 'A',
-                        actions: [TriggerNodeCreationAction.create(TaskListTypes.TASK_NODE)]
-                    },
-                    {
-                        id: TaskListTypes.DECISION_NODE,
-                        label: 'Decision',
-                        icon: 'fa-diamond',
-                        sortString: 'B',
-                        actions: [TriggerNodeCreationAction.create(TaskListTypes.DECISION_NODE)]
-                    },
-                    {
                         id: TaskListTypes.START_NODE,
-                        label: 'Start',
-                        icon: 'fa-circle',
+                        label: '开始',
                         sortString: 'C',
                         actions: [TriggerNodeCreationAction.create(TaskListTypes.START_NODE)]
                     },
                     {
                         id: TaskListTypes.END_NODE,
-                        label: 'End',
-                        icon: 'fa-circle-o',
+                        label: '结束',
                         sortString: 'D',
                         actions: [TriggerNodeCreationAction.create(TaskListTypes.END_NODE)]
                     },
                     {
+                        id: TaskListTypes.END_NODE,
+                        label: '异常',
+                        sortString: 'Z',
+                        actions: [TriggerNodeCreationAction.create(TaskListTypes.END_NODE)]
+                    },
+                    {
+                        id: TaskListTypes.TASK_NODE,
+                        label: '流程',
+                        sortString: 'A',
+                        actions: [TriggerNodeCreationAction.create(TaskListTypes.TASK_NODE)]
+                    },
+                    {
+                        id: TaskListTypes.DECISION_NODE,
+                        label: '分支',
+                        sortString: 'B',
+                        actions: [TriggerNodeCreationAction.create(TaskListTypes.DECISION_NODE)]
+                    },
+
+                    {
+                        id: TaskListTypes.DECISION_TABLE_NODE,
+                        label: '决策表',
+                        sortString: 'F',
+                        actions: [TriggerNodeCreationAction.create(TaskListTypes.DECISION_TABLE_NODE)]
+                    },
+
+                    {
+                        id: TaskListTypes.SUB_PROCESS_NODE,
+                        label: '子流程',
+                        sortString: 'H',
+                        actions: [TriggerNodeCreationAction.create(TaskListTypes.SUB_PROCESS_NODE)]
+                    },
+                    {
                         id: TaskListTypes.API_NODE,
                         label: 'API',
-                        icon: 'fa-hexagon',
                         sortString: 'E',
                         actions: [TriggerNodeCreationAction.create(TaskListTypes.API_NODE)]
                     },
                     {
-                        id: TaskListTypes.DECISION_TABLE_NODE,
-                        label: 'Decision Table',
-                        icon: 'fa-table',
-                        sortString: 'F',
-                        actions: [TriggerNodeCreationAction.create(TaskListTypes.DECISION_TABLE_NODE)]
-                    },
-                    {
                         id: TaskListTypes.AUTO_NODE,
-                        label: 'Auto',
-                        icon: 'fa-cog',
+                        label: '自动化',
                         sortString: 'G',
                         actions: [TriggerNodeCreationAction.create(TaskListTypes.AUTO_NODE)]
-                    },
-                    {
-                        id: TaskListTypes.SUB_PROCESS_NODE,
-                        label: 'SubProcess',
-                        icon: 'fa-sitemap',
-                        sortString: 'H',
-                        actions: [TriggerNodeCreationAction.create(TaskListTypes.SUB_PROCESS_NODE)]
                     }
                 ]
             },
             {
                 id: 'tasklist-edges',
-                label: 'Edges',
-                icon: 'fa-wrench',
+                label: '边',
                 sortString: 'B',
                 actions: [],
                 children: [
                     {
                         id: TaskListTypes.TRANSITION_EDGE,
-                        label: 'Transition',
-                        icon: 'fa-arrow-right',
+                        label: '连线',
                         sortString: 'A',
                         actions: [TriggerEdgeCreationAction.create(TaskListTypes.TRANSITION_EDGE)]
                     }
