@@ -22,11 +22,13 @@ import {
     DefaultTypes,
     editLabelFeature,
     GEdge,
+    GGraph,
     GLabel,
     GLabelView,
     GNode,
     initializeDiagramContainer,
     LogLevel,
+    overrideModelElement,
     PolylineEdgeView,
     TYPES
 } from '@eclipse-glsp/client';
@@ -42,7 +44,8 @@ import {
     EndNodeView,
     StartNodeView,
     SubProcessNodeView,
-    TaskNodeView
+    TaskNodeView,
+    WorkflowGraphView
 } from './tasklist-views';
 
 const taskListDiagramModule = new ContainerModule((bind, unbind, isBound, rebind) => {
@@ -50,6 +53,10 @@ const taskListDiagramModule = new ContainerModule((bind, unbind, isBound, rebind
     rebind(TYPES.LogLevel).toConstantValue(LogLevel.warn);
     const context = { bind, unbind, isBound, rebind };
     configureDefaultModelElements(context);
+
+    // 覆盖图形视图
+    overrideModelElement(context, DefaultTypes.GRAPH, GGraph, WorkflowGraphView);
+
     configureModelElement(context, DefaultTypes.LABEL, GLabel, GLabelView, { enable: [editLabelFeature] });
 
     // Configure different node types

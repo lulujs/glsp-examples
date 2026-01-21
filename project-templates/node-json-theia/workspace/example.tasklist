@@ -36,8 +36,8 @@
         "y": 226
       },
       "size": {
-        "width": 80,
-        "height": 80
+        "width": 63.82939658965563,
+        "height": 68.93590292976432
       }
     },
     {
@@ -90,6 +90,19 @@
       "size": {
         "width": 100,
         "height": 50
+      }
+    },
+    {
+      "id": "8f511c2f-79e0-4eba-93d1-7a73b7df4eff",
+      "name": "SubProcess7",
+      "type": "subProcess",
+      "position": {
+        "x": 1110.8241270253454,
+        "y": 427.2831656473878
+      },
+      "size": {
+        "width": 120,
+        "height": 60
       }
     }
   ],

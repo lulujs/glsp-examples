@@ -1,23 +1,43 @@
 /********************************************************************************
- * Copyright (c) 2022 EclipseSource and others.
- *
- * This program and the accompanying materials are made available under the
- * terms of the Eclipse Public License v. 2.0 which is available at
- * http://www.eclipse.org/legal/epl-2.0.
- *
- * This Source Code may also be made available under the following Secondary
- * Licenses when the conditions for such availability set forth in the Eclipse
- * Public License v. 2.0 are satisfied:
- * -- GNU General Public License, version 2 with the GNU Classpath Exception
- * which is available at https://www.gnu.org/software/classpath/license.html
- * -- MIT License which is available at https://opensource.org/license/mit.
- *
- * SPDX-License-Identifier: EPL-2.0 OR GPL-2.0 WITH Classpath-exception-2.0 OR MIT
+ * Copyright (c) 2024 CrossBreeze.
  ********************************************************************************/
+/** @jsx svg */
+/* eslint-disable react/no-unknown-property */
+/* eslint-disable max-len */
 
-import { GNode, RectangularNodeView, RenderingContext, RoundedCornerNodeView, svg } from '@eclipse-glsp/client';
+import { GGraph, GGraphView, GNode, RectangularNodeView, RenderingContext, RoundedCornerNodeView, svg } from '@eclipse-glsp/client';
+import { ReactNode } from '@theia/core/shared/react';
 import { injectable } from 'inversify';
+
 import { VNode } from 'snabbdom';
+
+/**
+ * 工作流程图视图 - 渲染整个工作流程图
+ * Workflow graph view - renders the entire workflow diagram
+ */
+@injectable()
+export class WorkflowGraphView extends GGraphView {
+    override render(model: Readonly<GGraph>, context: RenderingContext): VNode {
+        const edgeRouting = this.edgeRouterRegistry.routeAllChildren(model);
+        const transform = `scale(${model.zoom}) translate(${-model.scroll.x},${-model.scroll.y})`;
+        const graph: any = (
+            <svg class-sprotty-graph={true}>
+                <g transform={transform}>{context.renderChildren(model, { edgeRouting }) as ReactNode}</g>
+            </svg>
+        );
+        // 应用网格样式和渲染样式
+        if (graph.data) {
+            graph.data.style = { ...graph.data.style, ...this.getGridStyle(model, context), ...this.renderStyle(context) };
+        }
+        return graph;
+    }
+
+    protected renderStyle(context: RenderingContext): any {
+        return {
+            height: '100%'
+        };
+    }
+}
 
 // 通用函数：为文本元素添加居中属性
 function centerTextInNode(children: VNode[], centerX: number, centerY: number): VNode[] {
@@ -45,11 +65,23 @@ function centerTextInNode(children: VNode[], centerX: number, centerY: number): 
     });
 }
 
-// 生成六边形的点坐标
+// 生成六边形的点坐标（顺时针旋转90°）- 用于API节点
 function generateHexagonPoints(centerX: number, centerY: number, radius: number): string {
     const points = [];
     for (let i = 0; i < 6; i++) {
-        const angle = (Math.PI / 3) * i;
+        const angle = (Math.PI / 3) * i + Math.PI / 2; // 添加90°旋转
+        const x = centerX + radius * Math.cos(angle);
+        const y = centerY + radius * Math.sin(angle);
+        points.push(`${x},${y}`);
+    }
+    return points.join(' ');
+}
+
+// 生成六边形的点坐标（逆时针旋转180°）- 用于SubProcess节点
+function generateSubProcessHexagonPoints(centerX: number, centerY: number, radius: number): string {
+    const points = [];
+    for (let i = 0; i < 6; i++) {
+        const angle = (Math.PI / 3) * i - Math.PI; // 减去180°旋转（逆时针）
         const x = centerX + radius * Math.cos(angle);
         const y = centerY + radius * Math.sin(angle);
         points.push(`${x},${y}`);
@@ -259,7 +291,7 @@ export class SubProcessNodeView extends RectangularNodeView {
         const hexagon = svg('polygon', {
             class: { 'tasklist-subprocess': true, selected: node.selected, mouseover: node.hoverFeedback },
             attrs: {
-                points: generateHexagonPoints(centerX, centerY, radius)
+                points: generateSubProcessHexagonPoints(centerX, centerY, radius)
             }
         });
 

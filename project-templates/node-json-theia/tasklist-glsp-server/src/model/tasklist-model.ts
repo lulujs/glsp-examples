@@ -60,20 +60,20 @@ export namespace Task {
     export function getDefaultSize(type: TaskType): { width: number; height: number } {
         switch (type) {
             case TaskType.TASK:
-                return { width: 100, height: 50 };
+                return { width: 120, height: 60 };
             case TaskType.DECISION:
-                return { width: 80, height: 80 };
+                return { width: 120, height: 60 };
             case TaskType.START:
             case TaskType.END:
-                return { width: 90, height: 60 };
+                return { width: 120, height: 60 };
             case TaskType.API:
                 return { width: 80, height: 80 };
             case TaskType.DECISION_TABLE:
-                return { width: 90, height: 90 };
+                return { width: 120, height: 60 };
             case TaskType.AUTO:
-                return { width: 70, height: 70 };
+                return { width: 50, height: 50 };
             case TaskType.SUB_PROCESS:
-                return { width: 100, height: 80 };
+                return { width: 120, height: 60 };
             default:
                 return { width: 100, height: 50 };
         }
