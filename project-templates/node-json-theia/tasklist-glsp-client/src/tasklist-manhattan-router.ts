@@ -78,7 +78,7 @@ export class TasklistManhattanRouter extends GLSPManhattanEdgeRouter {
 
     protected override getOptions(edge: GRoutableElement): ManhattanRouterOptions {
         return {
-            standardDistance: 20,
+            standardDistance: 0, // 箭头完全贴着节点，无间距
             minimalPointDistance: 3,
             selfEdgeOffset: 0.25
         };

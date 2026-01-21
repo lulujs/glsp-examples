@@ -34,7 +34,14 @@ import {
 import 'balloon-css/balloon.min.css';
 import { Container, ContainerModule } from 'inversify';
 import '../css/diagram.css';
+import {
+    CircleManhattanAnchorComputer,
+    CirclePolylineAnchorComputer,
+    HexagonManhattanAnchorComputer,
+    HexagonPolylineAnchorComputer
+} from './tasklist-anchor-computer';
 import { TasklistEdgeView } from './tasklist-edge-views';
+import { CircleNode, HexagonNode } from './tasklist-models';
 import { TasklistRouterModule } from './tasklist-router-module';
 import { TaskListTypes } from './tasklist-types';
 import {
@@ -55,6 +62,14 @@ const taskListDiagramModule = new ContainerModule((bind, unbind, isBound, rebind
     const context = { bind, unbind, isBound, rebind };
     configureDefaultModelElements(context);
 
+    // 注册自定义锚点计算器 - Manhattan 路由器
+    bind(TYPES.IAnchorComputer).to(HexagonManhattanAnchorComputer);
+    bind(TYPES.IAnchorComputer).to(CircleManhattanAnchorComputer);
+
+    // 注册自定义锚点计算器 - Polyline 路由器
+    bind(TYPES.IAnchorComputer).to(HexagonPolylineAnchorComputer);
+    bind(TYPES.IAnchorComputer).to(CirclePolylineAnchorComputer);
+
     // 覆盖图形视图
     overrideModelElement(context, DefaultTypes.GRAPH, GGraph, WorkflowGraphView);
 
@@ -65,10 +80,10 @@ const taskListDiagramModule = new ContainerModule((bind, unbind, isBound, rebind
     configureModelElement(context, TaskListTypes.DECISION_NODE, GNode, DecisionNodeView);
     configureModelElement(context, TaskListTypes.START_NODE, GNode, StartNodeView);
     configureModelElement(context, TaskListTypes.END_NODE, GNode, EndNodeView);
-    configureModelElement(context, TaskListTypes.API_NODE, GNode, ApiNodeView);
+    configureModelElement(context, TaskListTypes.API_NODE, HexagonNode, ApiNodeView); // 使用 HexagonNode
     configureModelElement(context, TaskListTypes.DECISION_TABLE_NODE, GNode, DecisionTableNodeView);
-    configureModelElement(context, TaskListTypes.AUTO_NODE, GNode, AutoNodeView);
-    configureModelElement(context, TaskListTypes.SUB_PROCESS_NODE, GNode, SubProcessNodeView);
+    configureModelElement(context, TaskListTypes.AUTO_NODE, CircleNode, AutoNodeView); // 使用 CircleNode
+    configureModelElement(context, TaskListTypes.SUB_PROCESS_NODE, HexagonNode, SubProcessNodeView); // 使用 HexagonNode
 
     // Configure edge type with Manhattan routing support
     configureModelElement(context, TaskListTypes.TRANSITION_EDGE, GEdge, TasklistEdgeView);
