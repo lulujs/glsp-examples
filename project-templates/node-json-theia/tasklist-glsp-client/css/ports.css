@@ -1,27 +1,36 @@
-/* Port样式 */
+/* Port样式 - 默认隐藏 */
 .tasklist-port {
     fill: #28a745; /* 统一使用绿色 */
     stroke: #ffffff;
     stroke-width: 2;
-    opacity: 0.6;
+    opacity: 0 !important; /* 默认隐藏 */
     transition:
         opacity 0.2s ease,
         stroke-width 0.2s ease;
     cursor: crosshair;
-    pointer-events: all;
+    pointer-events: none;
 }
 
-/* 当节点被悬停或选中时显示ports */
-.sprotty-node:hover .tasklist-port,
-.sprotty-node.selected .tasklist-port,
-.sprotty-node.mouseover .tasklist-port {
-    opacity: 1;
+/* 当节点被悬停或选中时显示该节点的所有ports */
+.tasklist-end:hover .tasklist-port,
+.tasklist-task:hover .tasklist-port,
+.tasklist-decision:hover .tasklist-port,
+.tasklist-start:hover .tasklist-port,
+.tasklist-api:hover .tasklist-port,
+.tasklist-decision-table:hover .tasklist-port,
+.tasklist-auto:hover .tasklist-port,
+.tasklist-subprocess:hover .tasklist-port,
+.node.selected .tasklist-port,
+.node.mouseover .tasklist-port {
+    opacity: 1 !important;
+    pointer-events: all;
 }
 
 /* 当正在连接时显示所有ports */
 .sprotty-graph.connecting .tasklist-port,
 .sprotty-graph .sprotty-edge.drawing .tasklist-port {
     opacity: 1 !important;
+    pointer-events: all;
 }
 
 /* 所有类型port使用统一的绿色 */
@@ -33,9 +42,8 @@
     fill: #28a745;
 }
 
-/* Port悬停效果 - 只改变边框和阴影，不改变大小 */
+/* Port悬停效果 - 当鼠标在port上时增强显示效果 */
 .tasklist-port:hover {
-    opacity: 1 !important;
     stroke-width: 4;
     filter: drop-shadow(0 0 4px currentColor);
 }
@@ -48,6 +56,7 @@
     stroke: #ffffff;
     stroke-width: 4;
     animation: pulse-opacity 2s ease-in-out infinite;
+    pointer-events: all;
 }
 
 /* 可连接的port高亮 */
@@ -56,6 +65,7 @@
     stroke: #00ff00;
     stroke-width: 4;
     animation: glow 1.5s ease-in-out infinite;
+    pointer-events: all;
 }
 
 /* 只改变透明度的脉冲动画，避免闪动 */

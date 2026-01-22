@@ -186,15 +186,55 @@ export class TaskListGModelFactory implements GModelFactory {
                 break;
             }
 
-            case TaskType.AUTO:
-                // 圆形节点：4个主要方向的ports
+            case TaskType.AUTO: {
+                // 圆形节点：8个方向的ports（上、右上、右、右下、下、左下、左、左上）
+                const radius = Math.min(centerX, centerY) - 5; // 圆的半径，留5px边距
+
+                // 计算8个方向的ports（从上方开始，顺时针）
+                // 上 (90°)
+                const topX = centerX;
+                const topY = centerY - radius;
+
+                // 右上 (45°)
+                const topRightX = centerX + radius * Math.cos(Math.PI / 4);
+                const topRightY = centerY - radius * Math.sin(Math.PI / 4);
+
+                // 右 (0°)
+                const rightX = centerX + radius;
+                const rightY = centerY;
+
+                // 右下 (315° 或 -45°)
+                const bottomRightX = centerX + radius * Math.cos(-Math.PI / 4);
+                const bottomRightY = centerY - radius * Math.sin(-Math.PI / 4);
+
+                // 下 (270° 或 -90°)
+                const bottomX = centerX;
+                const bottomY = centerY + radius;
+
+                // 左下 (225° 或 -135°)
+                const bottomLeftX = centerX + radius * Math.cos((-3 * Math.PI) / 4);
+                const bottomLeftY = centerY - radius * Math.sin((-3 * Math.PI) / 4);
+
+                // 左 (180°)
+                const leftX = centerX - radius;
+                const leftY = centerY;
+
+                // 左上 (135°)
+                const topLeftX = centerX + radius * Math.cos((3 * Math.PI) / 4);
+                const topLeftY = centerY - radius * Math.sin((3 * Math.PI) / 4);
+
                 ports.push(
-                    this.createPort(task.id, '_top', centerX, 5, TaskListTypes.CIRCLE_PORT),
-                    this.createPort(task.id, '_right', size.width - 5, centerY, TaskListTypes.CIRCLE_PORT),
-                    this.createPort(task.id, '_bottom', centerX, size.height - 5, TaskListTypes.CIRCLE_PORT),
-                    this.createPort(task.id, '_left', 5, centerY, TaskListTypes.CIRCLE_PORT)
+                    this.createPort(task.id, '_top', topX, topY, TaskListTypes.CIRCLE_PORT),
+                    this.createPort(task.id, '_top_right', topRightX, topRightY, TaskListTypes.CIRCLE_PORT),
+                    this.createPort(task.id, '_right', rightX, rightY, TaskListTypes.CIRCLE_PORT),
+                    this.createPort(task.id, '_bottom_right', bottomRightX, bottomRightY, TaskListTypes.CIRCLE_PORT),
+                    this.createPort(task.id, '_bottom', bottomX, bottomY, TaskListTypes.CIRCLE_PORT),
+                    this.createPort(task.id, '_bottom_left', bottomLeftX, bottomLeftY, TaskListTypes.CIRCLE_PORT),
+                    this.createPort(task.id, '_left', leftX, leftY, TaskListTypes.CIRCLE_PORT),
+                    this.createPort(task.id, '_top_left', topLeftX, topLeftY, TaskListTypes.CIRCLE_PORT)
                 );
                 break;
+            }
 
             case TaskType.DECISION_TABLE:
                 // 八边形节点：4个主要方向的ports
