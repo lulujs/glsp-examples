@@ -86,6 +86,8 @@ export interface Transition {
     sourceTaskId: string;
     targetTaskId: string;
     routingPoints?: { x: number; y: number }[];
+    sourcePortPosition?: { x: number; y: number };
+    targetPortPosition?: { x: number; y: number };
 }
 
 export namespace Transition {

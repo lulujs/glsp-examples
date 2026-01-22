@@ -15,7 +15,7 @@
  * SPDX-License-Identifier: EPL-2.0 OR GPL-2.0 WITH Classpath-exception-2.0 OR MIT
  ********************************************************************************/
 
-import { Command, GEdge, JsonOperationHandler, MaybePromise, ReconnectEdgeOperation } from '@eclipse-glsp/server';
+import { Command, GEdge, GNode, GPort, JsonOperationHandler, MaybePromise, ReconnectEdgeOperation } from '@eclipse-glsp/server';
 import { inject, injectable } from 'inversify';
 import { TaskListModelState } from '../model/tasklist-model-state';
 
@@ -46,11 +46,41 @@ export class TaskListReconnectEdgeHandler extends JsonOperationHandler {
         // Update source if provided
         if (operation.sourceElementId) {
             transition.sourceTaskId = operation.sourceElementId;
+            // Calculate and save source port position
+            const sourcePort = index.findByClass(operation.sourceElementId, GPort);
+            if (sourcePort) {
+                transition.sourcePortPosition = this.getPortAbsolutePosition(sourcePort);
+            }
         }
 
         // Update target if provided
         if (operation.targetElementId) {
             transition.targetTaskId = operation.targetElementId;
+            // Calculate and save target port position
+            const targetPort = index.findByClass(operation.targetElementId, GPort);
+            if (targetPort) {
+                transition.targetPortPosition = this.getPortAbsolutePosition(targetPort);
+            }
         }
+    }
+
+    /**
+     * 获取port的绝对坐标（相对于画布）
+     */
+    protected getPortAbsolutePosition(port: GPort): { x: number; y: number } {
+        const parent = port.parent as GNode | undefined;
+        if (!parent) {
+            return { x: port.position.x + port.size.width / 2, y: port.position.y + port.size.height / 2 };
+        }
+
+        // Port position is relative to its parent node
+        // Add parent's position to get absolute position
+        const portCenterX = port.position.x + port.size.width / 2;
+        const portCenterY = port.position.y + port.size.height / 2;
+
+        return {
+            x: parent.position.x + portCenterX,
+            y: parent.position.y + portCenterY
+        };
     }
 }

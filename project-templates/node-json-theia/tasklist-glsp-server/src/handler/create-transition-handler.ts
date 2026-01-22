@@ -14,7 +14,7 @@
  *
  * SPDX-License-Identifier: EPL-2.0 OR GPL-2.0 WITH Classpath-exception-2.0 OR MIT
  ********************************************************************************/
-import { Command, CreateEdgeOperation, JsonCreateEdgeOperationHandler, MaybePromise } from '@eclipse-glsp/server';
+import { Command, CreateEdgeOperation, GNode, GPort, JsonCreateEdgeOperationHandler, MaybePromise } from '@eclipse-glsp/server';
 import { inject, injectable } from 'inversify';
 import * as uuid from 'uuid';
 import { Transition } from '../model/tasklist-model';
@@ -35,8 +35,42 @@ export class CreateTransitionHandler extends JsonCreateEdgeOperationHandler {
                 sourceTaskId: operation.sourceElementId,
                 targetTaskId: operation.targetElementId
             };
+
+            // Calculate and save port positions
+            const index = this.modelState.index;
+            const sourcePort = index.findByClass(operation.sourceElementId, GPort);
+            const targetPort = index.findByClass(operation.targetElementId, GPort);
+
+            if (sourcePort) {
+                transition.sourcePortPosition = this.getPortAbsolutePosition(sourcePort);
+            }
+
+            if (targetPort) {
+                transition.targetPortPosition = this.getPortAbsolutePosition(targetPort);
+            }
+
             this.modelState.sourceModel.transitions.push(transition);
         });
+    }
+
+    /**
+     * 获取port的绝对坐标（相对于画布）
+     */
+    protected getPortAbsolutePosition(port: GPort): { x: number; y: number } {
+        const parent = port.parent as GNode | undefined;
+        if (!parent) {
+            return { x: port.position.x + port.size.width / 2, y: port.position.y + port.size.height / 2 };
+        }
+
+        // Port position is relative to its parent node
+        // Add parent's position to get absolute position
+        const portCenterX = port.position.x + port.size.width / 2;
+        const portCenterY = port.position.y + port.size.height / 2;
+
+        return {
+            x: parent.position.x + portCenterX,
+            y: parent.position.y + portCenterY
+        };
     }
 
     get label(): string {
