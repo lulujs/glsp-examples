@@ -37,7 +37,7 @@
     "bundle": "webpack",
     "clean": "rimraf lib dist tsconfig.tsbuildinfo",
     "lint": "eslint --ext .ts,.tsx ./src",
-    "start": "node --enable-source-maps lib/index.js",
+    "start": "node --enable-source-maps lib/app.js",
     "watch": "tsc -w",
     "watch:bundle": "webpack --watch"
   },

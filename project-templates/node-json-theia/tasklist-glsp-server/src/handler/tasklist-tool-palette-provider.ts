@@ -45,7 +45,7 @@ export class TaskListToolPaletteProvider extends ToolPaletteItemProvider {
                         id: TaskListTypes.END_NODE,
                         label: '异常',
                         sortString: 'C',
-                        actions: [TriggerNodeCreationAction.create(TaskListTypes.END_NODE)]
+                        actions: [TriggerNodeCreationAction.create(TaskListTypes.END_NODE, { args: { type: 'error-end' } })]
                     },
                     {
                         id: TaskListTypes.TASK_NODE,

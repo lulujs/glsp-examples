@@ -126,6 +126,7 @@ function generateDecisionTableOctagonPoints(
     return points.join(' ');
 }
 
+// 流程节点
 @injectable()
 export class TaskNodeView extends RectangularNodeView {
     override render(node: GNode, context: RenderingContext): VNode {
@@ -153,6 +154,7 @@ export class TaskNodeView extends RectangularNodeView {
     }
 }
 
+// 分支节点
 @injectable()
 export class DecisionNodeView extends RectangularNodeView {
     override render(node: GNode, context: RenderingContext): VNode {
@@ -208,8 +210,26 @@ export class StartNodeView extends RoundedCornerNodeView {
 export class EndNodeView extends RoundedCornerNodeView {
     override render(node: GNode, context: RenderingContext): VNode {
         const cornerRadius = 15;
+
+        // 动态构建 CSS 类对象
+        const cssClasses: { [key: string]: boolean } = {
+            'tasklist-end': true,
+            selected: node.selected,
+            mouseover: node.hoverFeedback
+        };
+
+        // 检查节点是否有额外的 CSS 类（如 error-end）
+        // 在 GLSP 中，CSS 类通常存储在 node.cssClasses 数组中
+        if ((node as any).cssClasses && Array.isArray((node as any).cssClasses)) {
+            (node as any).cssClasses.forEach((cssClass: string) => {
+                if (cssClass !== 'tasklist-end') {
+                    // 避免重复添加基础类
+                    cssClasses[cssClass] = true;
+                }
+            });
+        }
         const rect = svg('rect', {
-            class: { 'tasklist-end': true, selected: node.selected, mouseover: node.hoverFeedback },
+            class: cssClasses,
             attrs: {
                 x: 0,
                 y: 0,
@@ -308,8 +328,8 @@ export class AutoNodeView extends RectangularNodeView {
 @injectable()
 export class SubProcessNodeView extends RectangularNodeView {
     override render(node: GNode, context: RenderingContext): VNode {
-        const centerX = node.size.width / 2;
-        const centerY = node.size.height / 2;
+        const centerX = node.size.width;
+        const centerY = node.size.height;
         const radius = Math.min(centerX, centerY) * 0.8; // 六边形半径
 
         const hexagon = svg('polygon', {

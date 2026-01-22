@@ -39,6 +39,7 @@ export interface Task {
     type: TaskType;
     position: { x: number; y: number };
     size?: { width: number; height: number };
+    subType?: string;
 }
 
 export enum TaskType {

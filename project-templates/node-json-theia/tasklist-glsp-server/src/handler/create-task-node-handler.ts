@@ -40,23 +40,25 @@ export class CreateTaskHandler extends JsonCreateNodeOperationHandler {
     override createCommand(operation: CreateNodeOperation): MaybePromise<Command | undefined> {
         return this.commandOf(() => {
             const relativeLocation = this.getRelativeLocation(operation) ?? Point.ORIGIN;
-            const task = this.createTask(operation.elementTypeId, relativeLocation);
+            const task = this.createTask(operation.elementTypeId, relativeLocation, operation.args);
             const taskList = this.modelState.sourceModel;
             taskList.tasks.push(task);
         });
     }
 
-    protected createTask(elementTypeId: string, position: Point): Task {
+    protected createTask(elementTypeId: string, position: Point, args?: any): Task {
         const nodeCounter = this.modelState.index.getAllByClass(GNode).length;
         const taskType = this.getTaskType(elementTypeId);
         const defaultName = this.getDefaultName(taskType, nodeCounter);
+        const subType = args?.type;
 
         return {
             id: uuid.v4(),
             name: defaultName,
             type: taskType,
             position,
-            size: Task.getDefaultSize(taskType)
+            size: Task.getDefaultSize(taskType),
+            subType
         };
     }
 

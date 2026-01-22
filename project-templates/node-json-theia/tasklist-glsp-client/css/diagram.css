@@ -80,6 +80,11 @@ svg {
     stroke: #d6b656;
     stroke-width: 2;
 }
+.error-end {
+    fill: rgb(248, 206, 204);
+    stroke: rgb(184, 84, 80);
+    stroke-width: 2;
+}
 
 .tasklist-end-inner {
     fill: #fff;

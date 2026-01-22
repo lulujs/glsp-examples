@@ -40,19 +40,24 @@ export class TaskListGModelFactory implements GModelFactory {
 
     protected createTaskNode(task: Task): GNode {
         const nodeType = this.getNodeType(task.type);
-        const cssClass = this.getNodeCssClass(task.type);
+        const baseCssClass = this.getNodeCssClass(task.type);
 
         const size = task.size || Task.getDefaultSize(task.type);
 
         const builder = GNode.builder()
             .id(task.id)
             .type(nodeType)
-            .addCssClass(cssClass)
+            .addCssClass(baseCssClass)
             .add(GLabel.builder().text(task.name).id(`${task.id}_label`).build())
             .layout('hbox')
             .addLayoutOption('paddingLeft', 5)
             .position(task.position)
             .size(size.width, size.height); // 明确设置节点大小
+
+        // 如果是 error-end 类型，添加额外的样式类
+        if (task.subType === 'error-end') {
+            builder.addCssClass('error-end');
+        }
 
         return builder.build();
     }
