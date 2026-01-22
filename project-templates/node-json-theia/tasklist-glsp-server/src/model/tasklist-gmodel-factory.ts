@@ -87,26 +87,104 @@ export class TaskListGModelFactory implements GModelFactory {
                 );
                 break;
 
-            case TaskType.DECISION:
-                // 菱形节点：上下左右4个ports
+            case TaskType.DECISION: {
+                // 菱形节点：4个顶点上的ports
+                // 菱形渲染坐标：`${size / 2},0 ${size},${size / 2} ${size / 2},${size} 0,${size / 2}`
+                const diamondSize = Math.min(size.width, size.height);
                 ports.push(
-                    this.createPort(task.id, '_top', centerX, 0, TaskListTypes.DIAMOND_PORT),
-                    this.createPort(task.id, '_right', size.width, centerY, TaskListTypes.DIAMOND_PORT),
-                    this.createPort(task.id, '_bottom', centerX, size.height, TaskListTypes.DIAMOND_PORT),
-                    this.createPort(task.id, '_left', 0, centerY, TaskListTypes.DIAMOND_PORT)
+                    this.createPort(task.id, '_top', diamondSize / 2, 0, TaskListTypes.DIAMOND_PORT),
+                    this.createPort(task.id, '_right', diamondSize, diamondSize / 2, TaskListTypes.DIAMOND_PORT),
+                    this.createPort(task.id, '_bottom', diamondSize / 2, diamondSize, TaskListTypes.DIAMOND_PORT),
+                    this.createPort(task.id, '_left', 0, diamondSize / 2, TaskListTypes.DIAMOND_PORT)
                 );
                 break;
+            }
 
-            case TaskType.API:
-            case TaskType.SUB_PROCESS:
-                // 六边形节点：简化为4个主要方向的ports
+            case TaskType.API: {
+                // API节点六边形：顺时针旋转90°
+                // 顶点角度：90°, 150°, 210°, 270°, 330°, 30°
+                const radius = Math.min(centerX, centerY) * 0.8;
+
+                // 计算6个顶点
+                const vertices: Array<{ x: number; y: number }> = [];
+                for (let i = 0; i < 6; i++) {
+                    const angle = (Math.PI / 3) * i + Math.PI / 2; // 添加90°旋转
+                    vertices.push({
+                        x: centerX + radius * Math.cos(angle),
+                        y: centerY + radius * Math.sin(angle)
+                    });
+                }
+
+                // 顶点索引：0=90°(上), 1=150°(左上), 2=210°(左下), 3=270°(下), 4=330°(右下), 5=30°(右上)
+                // 上顶点：顶点0(90°)
+                const apiTopX = vertices[0].x;
+                const apiTopY = vertices[0].y;
+
+                // 下顶点：顶点3(270°)
+                const apiBottomX = vertices[3].x;
+                const apiBottomY = vertices[3].y;
+
+                // 左竖直边中间点：连接顶点1(150°)和顶点2(210°)的中点
+                const apiLeftX = (vertices[1].x + vertices[2].x) / 2;
+                const apiLeftY = (vertices[1].y + vertices[2].y) / 2;
+
+                // 右竖直边中间点：连接顶点5(30°)和顶点4(330°)的中点
+                const apiRightX = (vertices[5].x + vertices[4].x) / 2;
+                const apiRightY = (vertices[5].y + vertices[4].y) / 2;
+
                 ports.push(
-                    this.createPort(task.id, '_top', centerX, 5, TaskListTypes.HEXAGON_PORT),
-                    this.createPort(task.id, '_right', size.width - 5, centerY, TaskListTypes.HEXAGON_PORT),
-                    this.createPort(task.id, '_bottom', centerX, size.height - 5, TaskListTypes.HEXAGON_PORT),
-                    this.createPort(task.id, '_left', 5, centerY, TaskListTypes.HEXAGON_PORT)
+                    this.createPort(task.id, '_top', apiTopX, apiTopY, TaskListTypes.HEXAGON_PORT),
+                    this.createPort(task.id, '_right', apiRightX, apiRightY, TaskListTypes.HEXAGON_PORT),
+                    this.createPort(task.id, '_bottom', apiBottomX, apiBottomY, TaskListTypes.HEXAGON_PORT),
+                    this.createPort(task.id, '_left', apiLeftX, apiLeftY, TaskListTypes.HEXAGON_PORT)
                 );
                 break;
+            }
+
+            case TaskType.SUB_PROCESS: {
+                // SubProcess六边形节点：上下水平边中间点、左右斜边顶点
+                // SubProcess使用逆时针旋转180°的六边形
+                // 注意：渲染代码中 centerX = width, centerY = height（不是width/2和height/2）
+                const renderCenterX = size.width;
+                const renderCenterY = size.height;
+                const radius = Math.min(renderCenterX, renderCenterY) * 0.8; // 与渲染代码保持一致
+
+                // 计算6个顶点
+                const vertices: Array<{ x: number; y: number }> = [];
+                for (let i = 0; i < 6; i++) {
+                    const angle = (Math.PI / 3) * i - Math.PI; // 减去180°旋转
+                    vertices.push({
+                        x: renderCenterX + radius * Math.cos(angle),
+                        y: renderCenterY + radius * Math.sin(angle)
+                    });
+                }
+
+                // 顶点索引：0=180°(左), 1=240°(左下), 2=300°(右下), 3=0°(右), 4=60°(右上), 5=120°(左上)
+                // 上水平边中间点：连接顶点5(120°)和顶点4(60°)的中点
+                const topX = (vertices[5].x + vertices[4].x) / 2;
+                const topY = (vertices[5].y + vertices[4].y) / 2;
+
+                // 下水平边中间点：连接顶点1(240°)和顶点2(300°)的中点
+                const bottomX = (vertices[1].x + vertices[2].x) / 2;
+                const bottomY = (vertices[1].y + vertices[2].y) / 2;
+
+                // 左斜边顶点：顶点0(180°)
+                const leftX = vertices[0].x;
+                const leftY = vertices[0].y;
+
+                // 右斜边顶点：顶点3(0°)
+                const rightX = vertices[3].x;
+                const rightY = vertices[3].y;
+
+                // 创建4个ports
+                ports.push(
+                    this.createPort(task.id, '_top', topX, topY, TaskListTypes.HEXAGON_PORT),
+                    this.createPort(task.id, '_right', rightX, rightY, TaskListTypes.HEXAGON_PORT),
+                    this.createPort(task.id, '_bottom', bottomX, bottomY, TaskListTypes.HEXAGON_PORT),
+                    this.createPort(task.id, '_left', leftX, leftY, TaskListTypes.HEXAGON_PORT)
+                );
+                break;
+            }
 
             case TaskType.AUTO:
                 // 圆形节点：4个主要方向的ports
