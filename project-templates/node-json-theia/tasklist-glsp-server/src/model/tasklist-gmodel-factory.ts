@@ -14,7 +14,7 @@
  *
  * SPDX-License-Identifier: EPL-2.0 OR GPL-2.0 WITH Classpath-exception-2.0 OR MIT
  ********************************************************************************/
-import { GEdge, GGraph, GLabel, GModelFactory, GNode } from '@eclipse-glsp/server';
+import { GEdge, GGraph, GLabel, GModelFactory, GNode, GPort } from '@eclipse-glsp/server';
 import { inject, injectable } from 'inversify';
 import { Task, TaskType, Transition } from './tasklist-model';
 import { TaskListModelState } from './tasklist-model-state';
@@ -59,7 +59,89 @@ export class TaskListGModelFactory implements GModelFactory {
             builder.addCssClass('error-end');
         }
 
+        // 为每个节点添加相应的ports
+        const ports = this.createPortsForNode(task, size);
+        ports.forEach(port => builder.add(port));
+
         return builder.build();
+    }
+
+    /**
+     * 为不同类型的节点创建相应的ports
+     */
+    protected createPortsForNode(task: Task, size: { width: number; height: number }): GPort[] {
+        const ports: GPort[] = [];
+        const centerX = size.width / 2;
+        const centerY = size.height / 2;
+
+        switch (task.type) {
+            case TaskType.TASK:
+            case TaskType.START:
+            case TaskType.END:
+                // 矩形节点：上下左右4个ports
+                ports.push(
+                    this.createPort(task.id, '_top', centerX, 0, TaskListTypes.RECTANGULAR_PORT),
+                    this.createPort(task.id, '_right', size.width, centerY, TaskListTypes.RECTANGULAR_PORT),
+                    this.createPort(task.id, '_bottom', centerX, size.height, TaskListTypes.RECTANGULAR_PORT),
+                    this.createPort(task.id, '_left', 0, centerY, TaskListTypes.RECTANGULAR_PORT)
+                );
+                break;
+
+            case TaskType.DECISION:
+                // 菱形节点：上下左右4个ports
+                ports.push(
+                    this.createPort(task.id, '_top', centerX, 0, TaskListTypes.DIAMOND_PORT),
+                    this.createPort(task.id, '_right', size.width, centerY, TaskListTypes.DIAMOND_PORT),
+                    this.createPort(task.id, '_bottom', centerX, size.height, TaskListTypes.DIAMOND_PORT),
+                    this.createPort(task.id, '_left', 0, centerY, TaskListTypes.DIAMOND_PORT)
+                );
+                break;
+
+            case TaskType.API:
+            case TaskType.SUB_PROCESS:
+                // 六边形节点：简化为4个主要方向的ports
+                ports.push(
+                    this.createPort(task.id, '_top', centerX, 5, TaskListTypes.HEXAGON_PORT),
+                    this.createPort(task.id, '_right', size.width - 5, centerY, TaskListTypes.HEXAGON_PORT),
+                    this.createPort(task.id, '_bottom', centerX, size.height - 5, TaskListTypes.HEXAGON_PORT),
+                    this.createPort(task.id, '_left', 5, centerY, TaskListTypes.HEXAGON_PORT)
+                );
+                break;
+
+            case TaskType.AUTO:
+                // 圆形节点：4个主要方向的ports
+                ports.push(
+                    this.createPort(task.id, '_top', centerX, 5, TaskListTypes.CIRCLE_PORT),
+                    this.createPort(task.id, '_right', size.width - 5, centerY, TaskListTypes.CIRCLE_PORT),
+                    this.createPort(task.id, '_bottom', centerX, size.height - 5, TaskListTypes.CIRCLE_PORT),
+                    this.createPort(task.id, '_left', 5, centerY, TaskListTypes.CIRCLE_PORT)
+                );
+                break;
+
+            case TaskType.DECISION_TABLE:
+                // 八边形节点：4个主要方向的ports
+                ports.push(
+                    this.createPort(task.id, '_top', centerX, 5, TaskListTypes.OCTAGON_PORT),
+                    this.createPort(task.id, '_right', size.width - 5, centerY, TaskListTypes.OCTAGON_PORT),
+                    this.createPort(task.id, '_bottom', centerX, size.height - 5, TaskListTypes.OCTAGON_PORT),
+                    this.createPort(task.id, '_left', 5, centerY, TaskListTypes.OCTAGON_PORT)
+                );
+                break;
+        }
+
+        return ports;
+    }
+
+    /**
+     * 创建单个port
+     */
+    protected createPort(nodeId: string, suffix: string, x: number, y: number, portType: string): GPort {
+        return GPort.builder()
+            .id(`${nodeId}${suffix}`)
+            .type(portType)
+            .position(x - 5, y - 5) // 10x10的port，居中定位
+            .size(10, 10) // 增大port尺寸，更容易点击
+            .build();
     }
 
     protected getNodeType(taskType: TaskType): string {

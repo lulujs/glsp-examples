@@ -20,6 +20,7 @@ import {
     getDefaultMapping,
     GModelElement,
     GModelElementConstructor,
+    GPort,
     ServerLayoutKind,
     ShapeTypeHint
 } from '@eclipse-glsp/server';
@@ -33,7 +34,14 @@ export class TaskListDiagramConfiguration implements DiagramConfiguration {
     animatedUpdate = true;
 
     get typeMapping(): Map<string, GModelElementConstructor<GModelElement>> {
-        return getDefaultMapping();
+        const mapping = getDefaultMapping();
+        // 添加Port类型映射
+        mapping.set(TaskListTypes.RECTANGULAR_PORT, GPort);
+        mapping.set(TaskListTypes.HEXAGON_PORT, GPort);
+        mapping.set(TaskListTypes.CIRCLE_PORT, GPort);
+        mapping.set(TaskListTypes.DIAMOND_PORT, GPort);
+        mapping.set(TaskListTypes.OCTAGON_PORT, GPort);
+        return mapping;
     }
 
     get shapeTypeHints(): ShapeTypeHint[] {
@@ -111,7 +119,12 @@ export class TaskListDiagramConfiguration implements DiagramConfiguration {
                     TaskListTypes.API_NODE,
                     TaskListTypes.DECISION_TABLE_NODE,
                     TaskListTypes.AUTO_NODE,
-                    TaskListTypes.SUB_PROCESS_NODE
+                    TaskListTypes.SUB_PROCESS_NODE,
+                    TaskListTypes.RECTANGULAR_PORT,
+                    TaskListTypes.HEXAGON_PORT,
+                    TaskListTypes.CIRCLE_PORT,
+                    TaskListTypes.DIAMOND_PORT,
+                    TaskListTypes.OCTAGON_PORT
                 ],
                 targetElementTypeIds: [
                     TaskListTypes.TASK_NODE,
@@ -120,7 +133,12 @@ export class TaskListDiagramConfiguration implements DiagramConfiguration {
                     TaskListTypes.API_NODE,
                     TaskListTypes.DECISION_TABLE_NODE,
                     TaskListTypes.AUTO_NODE,
-                    TaskListTypes.SUB_PROCESS_NODE
+                    TaskListTypes.SUB_PROCESS_NODE,
+                    TaskListTypes.RECTANGULAR_PORT,
+                    TaskListTypes.HEXAGON_PORT,
+                    TaskListTypes.CIRCLE_PORT,
+                    TaskListTypes.DIAMOND_PORT,
+                    TaskListTypes.OCTAGON_PORT
                 ]
             }
         ];

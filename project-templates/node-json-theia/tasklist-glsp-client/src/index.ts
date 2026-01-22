@@ -14,8 +14,8 @@
  *
  * SPDX-License-Identifier: EPL-2.0 OR GPL-2.0 WITH Classpath-exception-2.0 OR MIT
  ********************************************************************************/
-export * from './tasklist-anchor-computer';
 export * from './tasklist-diagram-module';
 export * from './tasklist-edge-views';
 export * from './tasklist-models';
+export * from './tasklist-port-views';
 export * from './tasklist-router-module';

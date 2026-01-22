@@ -15,26 +15,18 @@
  * SPDX-License-Identifier: EPL-2.0 OR GPL-2.0 WITH Classpath-exception-2.0 OR MIT
  ********************************************************************************/
 
-import { GNode } from '@eclipse-glsp/client';
-
-// Anchor kind constants (without router prefix)
-export const HEXAGON_ANCHOR_KIND = 'hexagon';
-export const CIRCLE_ANCHOR_KIND = 'circle';
+import { GNode, GPort } from '@eclipse-glsp/client';
 
 /**
- * Custom node class for hexagonal nodes (API and SubProcess)
+ * Custom node class for nodes with ports
  */
-export class HexagonNode extends GNode {
-    override get anchorKind(): string {
-        return HEXAGON_ANCHOR_KIND;
-    }
+export class TaskListNode extends GNode {
+    // 移除anchorKind，使用ports代替
 }
 
 /**
- * Custom node class for circular nodes (Auto)
+ * Custom port class for all port types
  */
-export class CircleNode extends GNode {
-    override get anchorKind(): string {
-        return CIRCLE_ANCHOR_KIND;
-    }
+export class TaskListPort extends GPort {
+    // Port的基础实现
 }

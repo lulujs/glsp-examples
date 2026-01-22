@@ -14,30 +14,12 @@
  * SPDX-License-Identifier: EPL-2.0 OR GPL-2.0 WITH Classpath-exception-2.0
  ********************************************************************************/
 /** @jsx svg */
-import {
-    EdgePadding,
-    GEdge,
-    IViewArgs,
-    Point,
-    PolylineEdgeViewWithGapsOnIntersections,
-    RenderingContext,
-    angleOfPoint,
-    isIntersectingRoutedPoint,
-    svg,
-    toDegrees
-} from '@eclipse-glsp/client';
+import { GEdge, IViewArgs, Point, PolylineEdgeView, RenderingContext, angleOfPoint, svg, toDegrees } from '@eclipse-glsp/client';
 import { injectable } from 'inversify';
 import { VNode } from 'snabbdom';
 
 /****************************************************************************
- * This module provides Tasklist edge views with Manhattan routing support
- *
- * Layout for the tasklist transition edges. The View extends the `PolylineEdgeView`,
- * that renders gaps on intersections.
- *
- * In addition the view renders rounded corners for Manhattan routing and an
- * arrow on the edge end point
- *
+ * 简化的Tasklist边视图，避免复杂的intersection处理
  ****************************************************************************/
 
 // @ts-ignore - JSX is used by the @jsx pragma
@@ -45,184 +27,196 @@ import { VNode } from 'snabbdom';
 const JSX = { createElement: svg };
 
 @injectable()
-export class TasklistEdgeView extends PolylineEdgeViewWithGapsOnIntersections {
+export class TasklistEdgeView extends PolylineEdgeView {
     /*
-     * The goal of this method is to render an edge supporting rounded corners.
+     * 渲染带圆角的边
      */
     protected override renderLine(edge: GEdge, segments: Point[], context: RenderingContext, args?: IViewArgs): VNode {
-        const path = this.createPathForSegments(edge, segments, args, true);
+        const path = this.createPathForSegments(edge, segments, args);
         const vnode: any = <path class-sprotty-edge={true} class-line={true} d={path} />;
         return vnode;
     }
 
     /**
-     * This method adds the additionals for a Tasklist Edge.
-     *
-     * We render an arrow at the end of the edge.
-     *
-     * Finally the method adds a padding that makes it easier to grab the line with the mouse.
-     *
-     * @param edge
-     * @param segments
-     * @param context
-     * @returns
+     * 为边段创建SVG路径，支持圆角
      */
-    protected override renderAdditionals(edge: GEdge, segments: Point[], context: RenderingContext): VNode[] {
-        const additionals = super.renderAdditionals(edge, segments, context);
-        const endP1 = segments[segments.length - 2];
-        const endP2 = segments[segments.length - 1];
-
-        // Render arrow at the end of the edge
-        const arrow: any = (
-            <path
-                class-sprotty-edge={true}
-                class-arrow={true}
-                d='M 1,0 L 14,-4 L 14,4 Z'
-                transform={`rotate(${toDegrees(angleOfPoint({ x: endP1.x - endP2.x, y: endP1.y - endP2.y }))} ${endP2.x} ${endP2.y}) translate(${endP2.x} ${endP2.y})`}
-            />
-        );
-        additionals.push(arrow);
-
-        // Add the edge padding
-        const edgePadding = EdgePadding.from(edge);
-        if (edgePadding) {
-            additionals.push(this.renderEdgePadding(edge, segments, edgePadding));
-        }
-        return additionals;
-    }
-
-    /**
-     * Additional path with transparent border to support edge padding feature.
-     *
-     * @param segments
-     * @param padding
-     * @returns
-     */
-    protected renderEdgePadding(edge: GEdge, segments: Point[], padding: number, args?: IViewArgs): VNode {
-        const vnode: any = (
-            <path
-                class-mouse-handle
-                d={this.createPathForSegments(edge, segments, args, false)}
-                style-stroke-width={padding * 2}
-                style-stroke='transparent'
-                style-stroke-dasharray='none'
-                style-stroke-dashoffset='0'
-            />
-        );
-        return vnode;
-    }
-
-    /**
-     * This helper method renders the SVG path for a Tasklist Edge. An edge can have multiple routing points.
-     * In addition this method renders 'rounded' corners typical for Manhattan routing.
-     *
-     * To render rounded corners we compute always the next segment to decide the corner angle.
-     *
-     * The method also supports the Sprotty Intersection feature. This renders an intersection if the edge
-     * crosses another edge.
-     *
-     * @param edge
-     * @param segments
-     * @param args
-     * @returns
-     */
-    protected createPathForSegments(edge: GEdge, segments: Point[], args?: IViewArgs, addIntersectionPoints?: boolean): string {
+    protected createPathForSegments(edge: GEdge, segments: Point[], args?: IViewArgs): string {
         let path = '';
-        let radius = 10;
-        for (let i = 0; i < segments.length; i++) {
-            const p = segments[i];
-            // start point?
+        let radius = 8; // 默认圆角半径
+
+        // 安全检查：确保segments数组不为空且所有点都有效
+        if (!segments || segments.length === 0) {
+            return '';
+        }
+
+        // 过滤掉无效的点
+        const validSegments = segments.filter(p => p && typeof p.x === 'number' && typeof p.y === 'number' && !isNaN(p.x) && !isNaN(p.y));
+
+        if (validSegments.length === 0) {
+            return '';
+        }
+
+        for (let i = 0; i < validSegments.length; i++) {
+            const p = validSegments[i];
+
+            // 起始点
             if (i === 0) {
                 path = `M ${p.x},${p.y}`;
+                continue;
             }
-            // Optional render the Intersection route point
-            if (addIntersectionPoints && isIntersectingRoutedPoint(p)) {
-                path += this.intersectionPath(edge, segments, p, args);
-            }
-            // render a line with rounded corners...
-            if (i > 0) {
-                // compute the direction of the next line...
-                if (i < segments.length - 1) {
-                    const plast = segments[i - 1];
-                    const pnext = segments[i + 1];
-                    // render lines ending with rounded corners...
-                    radius = this.computeMaxRadius(p, plast, pnext);
 
-                    // right-down  ↴
-                    if (plast.x < p.x && p.y < pnext.y) {
-                        path += ` L ${p.x - radius},${p.y}  Q ${p.x},${p.y} ${p.x},${p.y + radius}`;
-                        // down-right  ↳
-                    } else if (plast.y < p.y && p.x < pnext.x) {
-                        path += ` L ${p.x},${p.y - radius}  Q ${p.x},${p.y} ${p.x + radius},${p.y}`;
-                        // right-up  _↑
-                    } else if (plast.x < p.x && p.y > pnext.y) {
-                        path += ` L ${p.x - radius},${p.y}  Q ${p.x},${p.y} ${p.x},${p.y - radius}`;
-                        // up-right  ↱
-                    } else if (plast.y > p.y && p.x < pnext.x) {
-                        path += ` L ${p.x},${p.y + radius}  Q ${p.x},${p.y} ${p.x + radius},${p.y}`;
-                        // down-left  ↲
-                    } else if (plast.y < p.y && p.x > pnext.x) {
-                        path += ` L ${p.x},${p.y - radius}  Q ${p.x},${p.y} ${p.x - radius},${p.y}`;
-                        // left-down  ↓-
-                    } else if (plast.x > p.x && p.y < pnext.y) {
-                        path += ` L ${p.x + radius},${p.y}  Q ${p.x},${p.y} ${p.x},${p.y + radius}`;
-                        // up-left  ↰
-                    } else if (plast.y > p.y && p.x > pnext.x) {
-                        path += ` L ${p.x},${p.y + radius}  Q ${p.x},${p.y} ${p.x - radius},${p.y}`;
-                        // left-up ↑_
-                    } else if (plast.x > p.x && p.y > pnext.y) {
-                        path += ` L ${p.x + radius},${p.y}  Q ${p.x},${p.y} ${p.x},${p.y - radius}`;
-                    } else {
-                        // default
-                        path += ` L ${p.x},${p.y}`;
-                    }
+            // 中间点 - 添加圆角
+            if (i > 0 && i < validSegments.length - 1) {
+                const plast = validSegments[i - 1];
+                const pnext = validSegments[i + 1];
+
+                // 安全检查：确保所有点都有效
+                if (
+                    plast &&
+                    pnext &&
+                    typeof plast.x === 'number' &&
+                    typeof plast.y === 'number' &&
+                    typeof pnext.x === 'number' &&
+                    typeof pnext.y === 'number'
+                ) {
+                    // 计算安全的圆角半径
+                    radius = this.computeSafeRadius(p, plast, pnext);
+
+                    // 添加圆角路径
+                    path += this.addRoundedCorner(p, plast, pnext, radius);
                 } else {
-                    // default behavior
+                    // 如果点无效，使用直线
                     path += ` L ${p.x},${p.y}`;
                 }
+            } else {
+                // 终点 - 直线连接
+                path += ` L ${p.x},${p.y}`;
             }
         }
+
         return path;
     }
 
     /**
-     * Helper method to compute the maximum possible radius.
-     * If two points are very close the radius need to be reduced
+     * 计算安全的圆角半径
      */
-    protected computeMaxRadius(pCurrent: Point, pLast: Point, pNext: Point): number {
-        const defaultRadius = 10;
-        const minRadius = 2; // Minimum radius for visibility
-        const maxRadiusFactor = 0.45; // Use up to 45% of the shortest segment
+    protected computeSafeRadius(current: Point, previous: Point, next: Point): number {
+        const defaultRadius = 8;
+        const minRadius = 2;
 
-        // Calculate segment lengths
-        const segmentLengthBefore = Math.max(Math.abs(pCurrent.x - pLast.x), Math.abs(pCurrent.y - pLast.y));
+        try {
+            // 计算到前一个点和下一个点的距离
+            const distToPrev = Math.sqrt(Math.pow(current.x - previous.x, 2) + Math.pow(current.y - previous.y, 2));
+            const distToNext = Math.sqrt(Math.pow(next.x - current.x, 2) + Math.pow(next.y - current.y, 2));
 
-        const segmentLengthAfter = Math.max(Math.abs(pNext.x - pCurrent.x), Math.abs(pNext.y - pCurrent.y));
+            // 使用较短距离的30%作为最大半径
+            const maxRadius = Math.min(distToPrev, distToNext) * 0.3;
 
-        // Skip radius calculation if either segment is 0 (same points)
-        if (segmentLengthBefore === 0 || segmentLengthAfter === 0) {
+            // 返回安全的半径值
+            return Math.max(minRadius, Math.min(defaultRadius, maxRadius));
+        } catch (error) {
+            console.warn('Error computing radius:', error);
             return minRadius;
         }
+    }
 
-        // Use the shorter segment to determine maximum possible radius
-        const shortestSegment = Math.min(segmentLengthBefore, segmentLengthAfter);
+    /**
+     * 添加圆角路径
+     */
+    protected addRoundedCorner(current: Point, previous: Point, next: Point, radius: number): string {
+        try {
+            // 计算方向向量
+            const dx1 = current.x - previous.x;
+            const dy1 = current.y - previous.y;
+            const dx2 = next.x - current.x;
+            const dy2 = next.y - current.y;
 
-        // Calculate radius based on shortest segment
-        let calculatedRadius = shortestSegment * maxRadiusFactor;
+            // 如果是直线（没有转角），直接连接
+            if ((dx1 === 0 && dx2 === 0) || (dy1 === 0 && dy2 === 0)) {
+                return ` L ${current.x},${current.y}`;
+            }
 
-        // Apply constraints
-        calculatedRadius = Math.max(minRadius, calculatedRadius); // Not smaller than minimum
-        calculatedRadius = Math.min(defaultRadius, calculatedRadius); // Not larger than default
+            // 计算圆角的起点和终点
+            const len1 = Math.sqrt(dx1 * dx1 + dy1 * dy1);
+            const len2 = Math.sqrt(dx2 * dx2 + dy2 * dy2);
 
-        // For very short segments (< 5px), use an even smaller radius
-        if (shortestSegment < 5) {
-            calculatedRadius = Math.min(calculatedRadius, shortestSegment * 0.3);
+            if (len1 === 0 || len2 === 0) {
+                return ` L ${current.x},${current.y}`;
+            }
+
+            // 标准化方向向量
+            const ux1 = dx1 / len1;
+            const uy1 = dy1 / len1;
+            const ux2 = dx2 / len2;
+            const uy2 = dy2 / len2;
+
+            // 计算圆角点
+            const startX = current.x - ux1 * radius;
+            const startY = current.y - uy1 * radius;
+            const endX = current.x + ux2 * radius;
+            const endY = current.y + uy2 * radius;
+
+            return ` L ${startX},${startY} Q ${current.x},${current.y} ${endX},${endY}`;
+        } catch (error) {
+            console.warn('Error adding rounded corner:', error);
+            return ` L ${current.x},${current.y}`;
+        }
+    }
+
+    /**
+     * 渲染箭头
+     */
+    protected override renderAdditionals(edge: GEdge, segments: Point[], context: RenderingContext): VNode[] {
+        const additionals: VNode[] = [];
+
+        if (segments.length >= 2) {
+            try {
+                // 获取最后两个有效点来计算箭头方向
+                const validSegments = segments.filter(p => p && typeof p.x === 'number' && typeof p.y === 'number');
+
+                if (validSegments.length >= 2) {
+                    const target = validSegments[validSegments.length - 1];
+                    const source = validSegments[validSegments.length - 2];
+
+                    if (target && source) {
+                        // 计算方向向量
+                        const dx = target.x - source.x;
+                        const dy = target.y - source.y;
+                        const length = Math.sqrt(dx * dx + dy * dy);
+
+                        // 安全检查：确保长度不为0且有效
+                        if (length > 0 && !isNaN(length)) {
+                            // 箭头偏移距离（像素）
+                            const arrowOffset = 8;
+
+                            // 计算箭头位置（稍微远离目标节点）
+                            const arrowX = target.x - (dx / length) * arrowOffset;
+                            const arrowY = target.y - (dy / length) * arrowOffset;
+
+                            // 再次检查计算结果是否有效
+                            if (!isNaN(arrowX) && !isNaN(arrowY)) {
+                                const angle = toDegrees(angleOfPoint({ x: dx, y: dy }));
+
+                                // 检查角度是否有效
+                                if (!isNaN(angle)) {
+                                    const arrowHead = svg('path', {
+                                        class: { 'sprotty-edge': true, arrow: true },
+                                        attrs: {
+                                            d: 'M 0,-3 L 6,0 L 0,3 Z',
+                                            transform: `rotate(${angle} ${arrowX} ${arrowY}) translate(${arrowX} ${arrowY})`
+                                        }
+                                    });
+                                    additionals.push(arrowHead);
+                                }
+                            }
+                        }
+                    }
+                }
+            } catch (error) {
+                console.warn('Error rendering arrow:', error);
+            }
         }
 
-        // Ensure radius is never more than half of the shortest segment
-        // This prevents visual artifacts
-        calculatedRadius = Math.min(calculatedRadius, shortestSegment / 2);
-
-        return Math.round(calculatedRadius * 10) / 10; // Round to 1 decimal place
+        return additionals;
     }
 }

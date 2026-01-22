@@ -26,22 +26,19 @@ import {
     GLabel,
     GLabelView,
     GNode,
+    GPort,
     initializeDiagramContainer,
     LogLevel,
     overrideModelElement,
+    selectFeature,
     TYPES
 } from '@eclipse-glsp/client';
 import 'balloon-css/balloon.min.css';
 import { Container, ContainerModule } from 'inversify';
 import '../css/diagram.css';
-import {
-    CircleManhattanAnchorComputer,
-    CirclePolylineAnchorComputer,
-    HexagonManhattanAnchorComputer,
-    HexagonPolylineAnchorComputer
-} from './tasklist-anchor-computer';
+import '../css/ports.css';
 import { TasklistEdgeView } from './tasklist-edge-views';
-import { CircleNode, HexagonNode } from './tasklist-models';
+import { CirclePortView, DiamondPortView, HexagonPortView, OctagonPortView, RectangularPortView } from './tasklist-port-views';
 import { TasklistRouterModule } from './tasklist-router-module';
 import { TaskListTypes } from './tasklist-types';
 import {
@@ -62,30 +59,29 @@ const taskListDiagramModule = new ContainerModule((bind, unbind, isBound, rebind
     const context = { bind, unbind, isBound, rebind };
     configureDefaultModelElements(context);
 
-    // 注册自定义锚点计算器 - Manhattan 路由器
-    bind(TYPES.IAnchorComputer).to(HexagonManhattanAnchorComputer);
-    bind(TYPES.IAnchorComputer).to(CircleManhattanAnchorComputer);
-
-    // 注册自定义锚点计算器 - Polyline 路由器
-    bind(TYPES.IAnchorComputer).to(HexagonPolylineAnchorComputer);
-    bind(TYPES.IAnchorComputer).to(CirclePolylineAnchorComputer);
-
     // 覆盖图形视图
     overrideModelElement(context, DefaultTypes.GRAPH, GGraph, WorkflowGraphView);
 
     configureModelElement(context, DefaultTypes.LABEL, GLabel, GLabelView, { enable: [editLabelFeature] });
 
-    // Configure different node types
+    // Configure different node types - 使用统一的GNode（暂时保持简单）
     configureModelElement(context, TaskListTypes.TASK_NODE, GNode, TaskNodeView);
     configureModelElement(context, TaskListTypes.DECISION_NODE, GNode, DecisionNodeView);
     configureModelElement(context, TaskListTypes.START_NODE, GNode, StartNodeView);
     configureModelElement(context, TaskListTypes.END_NODE, GNode, EndNodeView);
-    configureModelElement(context, TaskListTypes.API_NODE, HexagonNode, ApiNodeView); // 使用 HexagonNode
+    configureModelElement(context, TaskListTypes.API_NODE, GNode, ApiNodeView);
     configureModelElement(context, TaskListTypes.DECISION_TABLE_NODE, GNode, DecisionTableNodeView);
-    configureModelElement(context, TaskListTypes.AUTO_NODE, CircleNode, AutoNodeView); // 使用 CircleNode
-    configureModelElement(context, TaskListTypes.SUB_PROCESS_NODE, HexagonNode, SubProcessNodeView); // 使用 HexagonNode
+    configureModelElement(context, TaskListTypes.AUTO_NODE, GNode, AutoNodeView);
+    configureModelElement(context, TaskListTypes.SUB_PROCESS_NODE, GNode, SubProcessNodeView);
 
-    // Configure edge type with Manhattan routing support
+    // Configure port types - 禁用selectFeature以避免阻止节点移动
+    configureModelElement(context, TaskListTypes.RECTANGULAR_PORT, GPort, RectangularPortView, { disable: [selectFeature] });
+    configureModelElement(context, TaskListTypes.HEXAGON_PORT, GPort, HexagonPortView, { disable: [selectFeature] });
+    configureModelElement(context, TaskListTypes.CIRCLE_PORT, GPort, CirclePortView, { disable: [selectFeature] });
+    configureModelElement(context, TaskListTypes.DIAMOND_PORT, GPort, DiamondPortView, { disable: [selectFeature] });
+    configureModelElement(context, TaskListTypes.OCTAGON_PORT, GPort, OctagonPortView, { disable: [selectFeature] });
+
+    // Configure edge type
     configureModelElement(context, TaskListTypes.TRANSITION_EDGE, GEdge, TasklistEdgeView);
 });
 

@@ -2,12 +2,12 @@
   "id": "d63b4a87-ca5e-41f8-b800-83ff4947a1ce",
   "tasks": [
     {
-      "id": "a889bd35-4ed6-42ea-b534-e254b6c6c1df",
-      "name": "开始",
+      "id": "2240cb39-890c-4c76-b8ad-66066233c426",
+      "name": "Start0",
       "type": "start",
       "position": {
-        "x": 504.734375,
-        "y": 55
+        "x": 562.734375,
+        "y": 36
       },
       "size": {
         "width": 120,
@@ -15,110 +15,48 @@
       }
     },
     {
-      "id": "a31c7365-2f83-4f3d-9bef-5658f1935d04",
-      "name": "流程",
-      "type": "task",
-      "position": {
-        "x": 623.734375,
-        "y": 220
-      },
-      "size": {
-        "width": 120,
-        "height": 60
-      }
-    },
-    {
-      "id": "de7707af-f8be-4e30-8ea3-915855cd6b63",
-      "name": "结束",
+      "id": "6128c913-6796-4438-8dcd-2683007f2a7e",
+      "name": "End1",
       "type": "end",
       "position": {
-        "x": 612.734375,
-        "y": 396
-      },
-      "size": {
-        "width": 120,
-        "height": 60
-      }
-    },
-    {
-      "id": "e7f26dda-1e2b-4a0a-8817-646c7bc50383",
-      "name": "分支",
-      "type": "decision",
-      "position": {
-        "x": 480.734375,
-        "y": 256
-      },
-      "size": {
-        "width": 120,
-        "height": 60
-      }
-    },
-    {
-      "id": "669a4669-3202-40b4-8074-41012c3a4cb1",
-      "name": "异常",
-      "type": "end",
-      "position": {
-        "x": 205.734375,
-        "y": 237
+        "x": 942.734375,
+        "y": 188
       },
       "size": {
         "width": 120,
         "height": 60
       },
       "subType": "error-end"
+    },
+    {
+      "id": "9ca97865-b0ed-4583-958d-0b52fd0dd274",
+      "name": "Auto2",
+      "type": "auto",
+      "position": {
+        "x": 262.734375,
+        "y": 219
+      },
+      "size": {
+        "width": 50,
+        "height": 50
+      }
     }
   ],
   "transitions": [
     {
-      "id": "1b43ac5d-3f07-418b-961e-b26d6d6e44f0",
-      "sourceTaskId": "a889bd35-4ed6-42ea-b534-e254b6c6c1df",
-      "targetTaskId": "a31c7365-2f83-4f3d-9bef-5658f1935d04"
+      "id": "3446bdd9-6ac9-489a-9e41-d603eb655314",
+      "sourceTaskId": "2240cb39-890c-4c76-b8ad-66066233c426_left",
+      "targetTaskId": "9ca97865-b0ed-4583-958d-0b52fd0dd274_top"
     },
     {
-      "id": "ca61abd4-03c6-4698-8673-3ea09b798557",
-      "sourceTaskId": "a889bd35-4ed6-42ea-b534-e254b6c6c1df",
-      "targetTaskId": "e7f26dda-1e2b-4a0a-8817-646c7bc50383",
-      "routingPoints": [
-        {
-          "x": 564.734375,
-          "y": 181
-        },
-        {
-          "x": 535.734375,
-          "y": 181
-        }
-      ]
+      "id": "8460ad15-e051-4377-8be1-97c590fbd9b9",
+      "sourceTaskId": "2240cb39-890c-4c76-b8ad-66066233c426_right",
+      "targetTaskId": "6128c913-6796-4438-8dcd-2683007f2a7e_left"
     },
     {
-      "id": "c833cb03-ad3b-400d-b67c-202079d69c76",
-      "sourceTaskId": "e7f26dda-1e2b-4a0a-8817-646c7bc50383",
-      "targetTaskId": "669a4669-3202-40b4-8074-41012c3a4cb1",
-      "routingPoints": [
-        {
-          "x": 392.734375,
-          "y": 297
-        },
-        {
-          "x": 392.734375,
-          "y": 267
-        }
-      ]
-    },
-    {
-      "id": "28bc8132-d885-47a9-9dd9-175990499e89",
-      "sourceTaskId": "e7f26dda-1e2b-4a0a-8817-646c7bc50383",
-      "targetTaskId": "de7707af-f8be-4e30-8ea3-915855cd6b63",
-      "routingPoints": [
-        {
-          "x": 596.234375,
-          "y": 426
-        }
-      ]
-    },
-    {
-      "id": "3f33814e-a9bd-4462-ada8-8bcb6ad6a8f6",
-      "sourceTaskId": "a31c7365-2f83-4f3d-9bef-5658f1935d04",
-      "targetTaskId": "de7707af-f8be-4e30-8ea3-915855cd6b63"
+      "id": "f4c5bb0c-5079-4780-9a4c-ee4ab3901edb",
+      "sourceTaskId": "2240cb39-890c-4c76-b8ad-66066233c426_bottom",
+      "targetTaskId": "6128c913-6796-4438-8dcd-2683007f2a7e_top"
     }
   ]
 }

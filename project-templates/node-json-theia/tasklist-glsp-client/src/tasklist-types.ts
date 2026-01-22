@@ -25,4 +25,11 @@ export namespace TaskListTypes {
     export const AUTO_NODE = 'auto:node';
     export const SUB_PROCESS_NODE = 'subProcess:node';
     export const TRANSITION_EDGE = 'transition:edge';
+
+    // Port types
+    export const RECTANGULAR_PORT = 'rectangular:port';
+    export const HEXAGON_PORT = 'hexagon:port';
+    export const CIRCLE_PORT = 'circle:port';
+    export const DIAMOND_PORT = 'diamond:port';
+    export const OCTAGON_PORT = 'octagon:port';
 }

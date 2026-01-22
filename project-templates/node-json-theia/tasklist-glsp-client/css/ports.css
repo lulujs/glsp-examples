@@ -1,0 +1,81 @@
+/* Port样式 */
+.tasklist-port {
+    fill: #28a745; /* 统一使用绿色 */
+    stroke: #ffffff;
+    stroke-width: 2;
+    opacity: 0.6;
+    transition:
+        opacity 0.2s ease,
+        stroke-width 0.2s ease;
+    cursor: crosshair;
+    pointer-events: all;
+}
+
+/* 当节点被悬停或选中时显示ports */
+.sprotty-node:hover .tasklist-port,
+.sprotty-node.selected .tasklist-port,
+.sprotty-node.mouseover .tasklist-port {
+    opacity: 1;
+}
+
+/* 当正在连接时显示所有ports */
+.sprotty-graph.connecting .tasklist-port,
+.sprotty-graph .sprotty-edge.drawing .tasklist-port {
+    opacity: 1 !important;
+}
+
+/* 所有类型port使用统一的绿色 */
+.rectangular-port,
+.hexagon-port,
+.circle-port,
+.diamond-port,
+.octagon-port {
+    fill: #28a745;
+}
+
+/* Port悬停效果 - 只改变边框和阴影，不改变大小 */
+.tasklist-port:hover {
+    opacity: 1 !important;
+    stroke-width: 4;
+    filter: drop-shadow(0 0 4px currentColor);
+}
+
+/* 连接时的高亮效果 */
+.tasklist-port.connection-target,
+.tasklist-port.connection-source {
+    opacity: 1 !important;
+    fill: #ff6b6b;
+    stroke: #ffffff;
+    stroke-width: 4;
+    animation: pulse-opacity 2s ease-in-out infinite;
+}
+
+/* 可连接的port高亮 */
+.tasklist-port.connectable {
+    opacity: 1 !important;
+    stroke: #00ff00;
+    stroke-width: 4;
+    animation: glow 1.5s ease-in-out infinite;
+}
+
+/* 只改变透明度的脉冲动画，避免闪动 */
+@keyframes pulse-opacity {
+    0%,
+    100% {
+        opacity: 1;
+    }
+    50% {
+        opacity: 0.6;
+    }
+}
+
+/* 发光动画 */
+@keyframes glow {
+    0%,
+    100% {
+        filter: drop-shadow(0 0 2px currentColor);
+    }
+    50% {
+        filter: drop-shadow(0 0 6px currentColor);
+    }
+}
