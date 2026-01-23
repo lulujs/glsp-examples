@@ -328,13 +328,69 @@ export class TaskListGModelFactory implements GModelFactory {
             }
 
             case TaskType.DECISION_TABLE: {
-                // 计算八边形的8个顶点（从右边开始，逆时针）
+                // DecisionTable八边形节点：4个水平/垂直边中心点 + 4个斜角边中心点
+                const w = size.width / 2;
+                const h = size.height / 2;
+                const cornerCut = Math.min(Math.min(w, h) * 0.8, 20); // 与客户端渲染保持一致
+
+                // 计算八边形的8个顶点坐标（与客户端generateDecisionTableOctagonPoints保持一致）
+                const vertices = [
+                    { x: centerX - w + cornerCut, y: centerY - h }, // 0: 左上角切角后
+                    { x: centerX + w - cornerCut, y: centerY - h }, // 1: 右上角切角前
+                    { x: centerX + w, y: centerY - h + cornerCut }, // 2: 右上角切角后
+                    { x: centerX + w, y: centerY + h - cornerCut }, // 3: 右下角切角前
+                    { x: centerX + w - cornerCut, y: centerY + h }, // 4: 右下角切角后
+                    { x: centerX - w + cornerCut, y: centerY + h }, // 5: 左下角切角前
+                    { x: centerX - w, y: centerY + h - cornerCut }, // 6: 左下角切角后
+                    { x: centerX - w, y: centerY - h + cornerCut } // 7: 左上角切角前
+                ];
+
                 // 原有的4个主要方向ports（水平/垂直边的中心点）
+                // 上边中心点：顶点0和顶点1的中点
+                const topX = (vertices[0].x + vertices[1].x) / 2;
+                const topY = (vertices[0].y + vertices[1].y) / 2;
+
+                // 右边中心点：顶点2和顶点3的中点
+                const rightX = (vertices[2].x + vertices[3].x) / 2;
+                const rightY = (vertices[2].y + vertices[3].y) / 2;
+
+                // 下边中心点：顶点4和顶点5的中点
+                const bottomX = (vertices[4].x + vertices[5].x) / 2;
+                const bottomY = (vertices[4].y + vertices[5].y) / 2;
+
+                // 左边中心点：顶点6和顶点7的中点
+                const leftX = (vertices[6].x + vertices[7].x) / 2;
+                const leftY = (vertices[6].y + vertices[7].y) / 2;
+
                 ports.push(
-                    this.createPort(task.id, '_top', centerX, 5, TaskListTypes.OCTAGON_PORT),
-                    this.createPort(task.id, '_right', size.width - 5, centerY, TaskListTypes.OCTAGON_PORT),
-                    this.createPort(task.id, '_bottom', centerX, size.height - 5, TaskListTypes.OCTAGON_PORT),
-                    this.createPort(task.id, '_left', 5, centerY, TaskListTypes.OCTAGON_PORT)
+                    this.createPort(task.id, '_top', topX, topY, TaskListTypes.OCTAGON_PORT),
+                    this.createPort(task.id, '_right', rightX, rightY, TaskListTypes.OCTAGON_PORT),
+                    this.createPort(task.id, '_bottom', bottomX, bottomY, TaskListTypes.OCTAGON_PORT),
+                    this.createPort(task.id, '_left', leftX, leftY, TaskListTypes.OCTAGON_PORT)
+                );
+
+                // 新增的4个斜角边中心点ports
+                // 右上斜边中心点：顶点1和顶点2的中点
+                const topRightX = (vertices[1].x + vertices[2].x) / 2;
+                const topRightY = (vertices[1].y + vertices[2].y) / 2;
+
+                // 右下斜边中心点：顶点3和顶点4的中点
+                const bottomRightX = (vertices[3].x + vertices[4].x) / 2;
+                const bottomRightY = (vertices[3].y + vertices[4].y) / 2;
+
+                // 左下斜边中心点：顶点5和顶点6的中点
+                const bottomLeftX = (vertices[5].x + vertices[6].x) / 2;
+                const bottomLeftY = (vertices[5].y + vertices[6].y) / 2;
+
+                // 左上斜边中心点：顶点7和顶点0的中点
+                const topLeftX = (vertices[7].x + vertices[0].x) / 2;
+                const topLeftY = (vertices[7].y + vertices[0].y) / 2;
+
+                ports.push(
+                    this.createPort(task.id, '_top_right', topRightX, topRightY, TaskListTypes.OCTAGON_PORT),
+                    this.createPort(task.id, '_bottom_right', bottomRightX, bottomRightY, TaskListTypes.OCTAGON_PORT),
+                    this.createPort(task.id, '_bottom_left', bottomLeftX, bottomLeftY, TaskListTypes.OCTAGON_PORT),
+                    this.createPort(task.id, '_top_left', topLeftX, topLeftY, TaskListTypes.OCTAGON_PORT)
                 );
                 break;
             }
