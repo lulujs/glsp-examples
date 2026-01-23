@@ -52,6 +52,32 @@
         "width": 120,
         "height": 60
       }
+    },
+    {
+      "id": "95b3bf87-2644-42a7-9c36-c999399bd9be",
+      "name": "SubProcess4",
+      "type": "subProcess",
+      "position": {
+        "x": 190.36074549701848,
+        "y": 33.06981391258519
+      },
+      "size": {
+        "width": 120,
+        "height": 60
+      }
+    },
+    {
+      "id": "424f2905-91a9-4868-82fb-a2a805502c2b",
+      "name": "DecisionTable5",
+      "type": "decisionTable",
+      "position": {
+        "x": -11.021136642763537,
+        "y": -19.38314143545105
+      },
+      "size": {
+        "width": 120,
+        "height": 60
+      }
     }
   ],
   "transitions": [

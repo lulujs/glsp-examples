@@ -207,7 +207,7 @@ export class TaskListGModelFactory implements GModelFactory {
             }
 
             case TaskType.SUB_PROCESS: {
-                // SubProcess六边形节点：上下水平边中间点、左右斜边顶点
+                // SubProcess六边形节点：上下水平边中间点、左右斜边顶点 + 4条斜角边中心点ports
                 // SubProcess使用逆时针旋转180°的六边形
                 // 注意：渲染代码中 centerX = width, centerY = height（不是width/2和height/2）
                 const renderCenterX = size.width;
@@ -225,6 +225,7 @@ export class TaskListGModelFactory implements GModelFactory {
                 }
 
                 // 顶点索引：0=180°(左), 1=240°(左下), 2=300°(右下), 3=0°(右), 4=60°(右上), 5=120°(左上)
+                // 原有的4个ports
                 // 上水平边中间点：连接顶点5(120°)和顶点4(60°)的中点
                 const topX = (vertices[5].x + vertices[4].x) / 2;
                 const topY = (vertices[5].y + vertices[4].y) / 2;
@@ -241,12 +242,37 @@ export class TaskListGModelFactory implements GModelFactory {
                 const rightX = vertices[3].x;
                 const rightY = vertices[3].y;
 
-                // 创建4个ports
+                // 创建原有的4个ports
                 ports.push(
                     this.createPort(task.id, '_top', topX, topY, TaskListTypes.HEXAGON_PORT),
                     this.createPort(task.id, '_right', rightX, rightY, TaskListTypes.HEXAGON_PORT),
                     this.createPort(task.id, '_bottom', bottomX, bottomY, TaskListTypes.HEXAGON_PORT),
                     this.createPort(task.id, '_left', leftX, leftY, TaskListTypes.HEXAGON_PORT)
+                );
+
+                // 新增的4条斜角边中心点ports
+                // 六边形有6条边：2条水平边（已有ports）+ 4条斜角边（需要添加ports）
+                // 左上斜边中心点：连接顶点0(180°)和顶点5(120°)的中点
+                const topLeftX = (vertices[0].x + vertices[5].x) / 2;
+                const topLeftY = (vertices[0].y + vertices[5].y) / 2;
+
+                // 右上斜边中心点：连接顶点4(60°)和顶点3(0°)的中点
+                const topRightX = (vertices[4].x + vertices[3].x) / 2;
+                const topRightY = (vertices[4].y + vertices[3].y) / 2;
+
+                // 右下斜边中心点：连接顶点3(0°)和顶点2(300°)的中点
+                const bottomRightX = (vertices[3].x + vertices[2].x) / 2;
+                const bottomRightY = (vertices[3].y + vertices[2].y) / 2;
+
+                // 左下斜边中心点：连接顶点1(240°)和顶点0(180°)的中点
+                const bottomLeftX = (vertices[1].x + vertices[0].x) / 2;
+                const bottomLeftY = (vertices[1].y + vertices[0].y) / 2;
+
+                ports.push(
+                    this.createPort(task.id, '_top_left', topLeftX, topLeftY, TaskListTypes.HEXAGON_PORT),
+                    this.createPort(task.id, '_top_right', topRightX, topRightY, TaskListTypes.HEXAGON_PORT),
+                    this.createPort(task.id, '_bottom_right', bottomRightX, bottomRightY, TaskListTypes.HEXAGON_PORT),
+                    this.createPort(task.id, '_bottom_left', bottomLeftX, bottomLeftY, TaskListTypes.HEXAGON_PORT)
                 );
                 break;
             }
@@ -301,8 +327,9 @@ export class TaskListGModelFactory implements GModelFactory {
                 break;
             }
 
-            case TaskType.DECISION_TABLE:
-                // 八边形节点：4个主要方向的ports
+            case TaskType.DECISION_TABLE: {
+                // 计算八边形的8个顶点（从右边开始，逆时针）
+                // 原有的4个主要方向ports（水平/垂直边的中心点）
                 ports.push(
                     this.createPort(task.id, '_top', centerX, 5, TaskListTypes.OCTAGON_PORT),
                     this.createPort(task.id, '_right', size.width - 5, centerY, TaskListTypes.OCTAGON_PORT),
@@ -310,6 +337,7 @@ export class TaskListGModelFactory implements GModelFactory {
                     this.createPort(task.id, '_left', 5, centerY, TaskListTypes.OCTAGON_PORT)
                 );
                 break;
+            }
         }
 
         return ports;
