@@ -80,6 +80,19 @@
         "x": 697.853841552575,
         "y": 381.6973232594668
       }
+    },
+    {
+      "id": "c66ed7c0-d092-4b60-8e4d-7dca54da5010",
+      "sourceTaskId": "db20211a-890e-4129-8ae5-1bfb87fde92f_right",
+      "targetTaskId": "8cd30f50-83f3-4887-a400-825cefc624a2_top_left",
+      "sourcePortPosition": {
+        "x": 652.1782750931125,
+        "y": -47.519396368133386
+      },
+      "targetPortPosition": {
+        "x": 821.6196307533733,
+        "y": 136.05250602086096
+      }
     }
   ]
 }

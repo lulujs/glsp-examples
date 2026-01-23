@@ -143,14 +143,24 @@ export class TaskListGModelFactory implements GModelFactory {
             }
 
             case TaskType.DECISION: {
-                // 菱形节点：4个顶点上的ports
+                // 菱形节点：4个顶点上的ports + 4个边中点ports
                 // 菱形渲染坐标：`${size / 2},0 ${size},${size / 2} ${size / 2},${size} 0,${size / 2}`
                 const diamondSize = Math.min(size.width, size.height);
+                const halfSize = diamondSize / 2;
+                const quarterSize = diamondSize / 4;
+                const threeQuarterSize = (diamondSize * 3) / 4;
+
                 ports.push(
-                    this.createPort(task.id, '_top', diamondSize / 2, 0, TaskListTypes.DIAMOND_PORT),
-                    this.createPort(task.id, '_right', diamondSize, diamondSize / 2, TaskListTypes.DIAMOND_PORT),
-                    this.createPort(task.id, '_bottom', diamondSize / 2, diamondSize, TaskListTypes.DIAMOND_PORT),
-                    this.createPort(task.id, '_left', 0, diamondSize / 2, TaskListTypes.DIAMOND_PORT)
+                    // 原有的4个顶点ports
+                    this.createPort(task.id, '_top', halfSize, 0, TaskListTypes.DIAMOND_PORT),
+                    this.createPort(task.id, '_right', diamondSize, halfSize, TaskListTypes.DIAMOND_PORT),
+                    this.createPort(task.id, '_bottom', halfSize, diamondSize, TaskListTypes.DIAMOND_PORT),
+                    this.createPort(task.id, '_left', 0, halfSize, TaskListTypes.DIAMOND_PORT),
+                    // 新增的4个边中点ports（在每两个顶点之间）
+                    this.createPort(task.id, '_top_right', threeQuarterSize, quarterSize, TaskListTypes.DIAMOND_PORT), // 上顶点和右顶点之间
+                    this.createPort(task.id, '_bottom_right', threeQuarterSize, threeQuarterSize, TaskListTypes.DIAMOND_PORT), // 右顶点和下顶点之间
+                    this.createPort(task.id, '_bottom_left', quarterSize, threeQuarterSize, TaskListTypes.DIAMOND_PORT), // 下顶点和左顶点之间
+                    this.createPort(task.id, '_top_left', quarterSize, quarterSize, TaskListTypes.DIAMOND_PORT) // 左顶点和上顶点之间
                 );
                 break;
             }
