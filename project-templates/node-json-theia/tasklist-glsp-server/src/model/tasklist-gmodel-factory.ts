@@ -76,12 +76,18 @@ export class TaskListGModelFactory implements GModelFactory {
 
         switch (task.type) {
             case TaskType.TASK:
-                // 矩形节点：上下左右4个ports
+                // 矩形节点：上下左右4个ports + 四个顶点ports
                 ports.push(
+                    // 原有的上下左右ports
                     this.createPort(task.id, '_top', centerX, 0, TaskListTypes.RECTANGULAR_PORT),
                     this.createPort(task.id, '_right', size.width, centerY, TaskListTypes.RECTANGULAR_PORT),
                     this.createPort(task.id, '_bottom', centerX, size.height, TaskListTypes.RECTANGULAR_PORT),
-                    this.createPort(task.id, '_left', 0, centerY, TaskListTypes.RECTANGULAR_PORT)
+                    this.createPort(task.id, '_left', 0, centerY, TaskListTypes.RECTANGULAR_PORT),
+                    // 新增的四个顶点ports
+                    this.createPort(task.id, '_top_left', 0, 0, TaskListTypes.RECTANGULAR_PORT), // 左上顶点
+                    this.createPort(task.id, '_top_right', size.width, 0, TaskListTypes.RECTANGULAR_PORT), // 右上顶点
+                    this.createPort(task.id, '_bottom_left', 0, size.height, TaskListTypes.RECTANGULAR_PORT), // 左下顶点
+                    this.createPort(task.id, '_bottom_right', size.width, size.height, TaskListTypes.RECTANGULAR_PORT) // 右下顶点
                 );
                 break;
 

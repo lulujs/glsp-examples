@@ -2,12 +2,12 @@
   "id": "d63b4a87-ca5e-41f8-b800-83ff4947a1ce",
   "tasks": [
     {
-      "id": "3327fe7f-883d-4f46-9d70-efcd2d3cb0aa",
+      "id": "db20211a-890e-4129-8ae5-1bfb87fde92f",
       "name": "Start0",
       "type": "start",
       "position": {
-        "x": 292.51428098544795,
-        "y": -12.191897387772965
+        "x": 533.1782750931125,
+        "y": -76.51939636813339
       },
       "size": {
         "width": 120,
@@ -15,12 +15,25 @@
       }
     },
     {
-      "id": "129f8d17-ef0c-4b81-9f79-42017f4a4b18",
-      "name": "End1",
+      "id": "dcfbf74d-03ba-4171-a190-484cb172ad9f",
+      "name": "Task1",
+      "type": "task",
+      "position": {
+        "x": 400.17256688916336,
+        "y": 118.30586635314408
+      },
+      "size": {
+        "width": 120,
+        "height": 60
+      }
+    },
+    {
+      "id": "0c077778-d203-4e85-ab2a-a44f41550885",
+      "name": "End2",
       "type": "end",
       "position": {
-        "x": 446.7377734446594,
-        "y": 251.12969300782098
+        "x": 685.853841552575,
+        "y": 378.6973232594668
       },
       "size": {
         "width": 120,
@@ -28,95 +41,44 @@
       }
     },
     {
-      "id": "fd9ed4e5-44cc-4573-bc87-0e574b264850",
-      "name": "Decision2",
+      "id": "8cd30f50-83f3-4887-a400-825cefc624a2",
+      "name": "Decision3",
       "type": "decision",
       "position": {
-        "x": 7.536427686668901,
-        "y": 109.5679417300407
+        "x": 807.6196307533733,
+        "y": 122.05250602086095
       },
       "size": {
         "width": 120,
         "height": 60
-      }
-    },
-    {
-      "id": "580d37fe-5525-472a-b6ff-8bc396e2c927",
-      "name": "Auto3",
-      "type": "auto",
-      "position": {
-        "x": 229.37552262845628,
-        "y": 496.7132473504877
-      },
-      "size": {
-        "width": 50,
-        "height": 50
       }
     }
   ],
   "transitions": [
     {
-      "id": "284b8daa-7fd2-4f0a-9a9e-24401b2397d0",
-      "sourceTaskId": "3327fe7f-883d-4f46-9d70-efcd2d3cb0aa_right",
-      "targetTaskId": "129f8d17-ef0c-4b81-9f79-42017f4a4b18_top",
+      "id": "7dbd5b13-e185-4e7c-a105-d5d1f363e7b2",
+      "sourceTaskId": "db20211a-890e-4129-8ae5-1bfb87fde92f_bottom",
+      "targetTaskId": "dcfbf74d-03ba-4171-a190-484cb172ad9f_top_left",
       "sourcePortPosition": {
-        "x": 411.51428098544795,
-        "y": 16.808102612227035
+        "x": 592.1782750931125,
+        "y": -17.519396368133386
       },
       "targetPortPosition": {
-        "x": 500.1178139430841,
-        "y": 196.7400777428555
-      },
-      "routingPoints": [
-        {
-          "x": 411.51428098544795,
-          "y": 131.02984200852103
-        },
-        {
-          "x": 756.3818996169606,
-          "y": 131.02984200852103
-        },
-        {
-          "x": 756.3818996169606,
-          "y": 196.7400777428555
-        }
-      ]
-    },
-    {
-      "id": "29470b31-cdeb-439e-912f-75edb4efe378",
-      "sourceTaskId": "3327fe7f-883d-4f46-9d70-efcd2d3cb0aa_bottom",
-      "targetTaskId": "580d37fe-5525-472a-b6ff-8bc396e2c927",
-      "sourcePortPosition": {
-        "x": 351.51428098544795,
-        "y": 46.80810261222703
-      },
-      "routingPoints": [
-        {
-          "x": 263.7107334734994,
-          "y": 47.80810261222703
-        }
-      ]
-    },
-    {
-      "id": "68b52853-acf2-4148-a72d-a4832e8b14ee",
-      "sourceTaskId": "3327fe7f-883d-4f46-9d70-efcd2d3cb0aa",
-      "targetTaskId": "580d37fe-5525-472a-b6ff-8bc396e2c927_top_right",
-      "targetPortPosition": {
-        "x": 356.51336338034685,
-        "y": 415.86522864854084
+        "x": 399.17256688916336,
+        "y": 117.30586635314408
       }
     },
     {
-      "id": "280d276b-96d2-43a1-a9a0-ba99b814e733",
-      "sourceTaskId": "3327fe7f-883d-4f46-9d70-efcd2d3cb0aa_top",
-      "targetTaskId": "580d37fe-5525-472a-b6ff-8bc396e2c927_top_right",
+      "id": "def1e4fe-53e7-451e-8d84-f0e61fadef73",
+      "sourceTaskId": "dcfbf74d-03ba-4171-a190-484cb172ad9f_bottom",
+      "targetTaskId": "0c077778-d203-4e85-ab2a-a44f41550885_top_left",
       "sourcePortPosition": {
-        "x": 351.51428098544795,
-        "y": -13.191897387772965
+        "x": 459.17256688916336,
+        "y": 177.3058663531441
       },
       "targetPortPosition": {
-        "x": 233.20219579916989,
-        "y": 509.9376657723253
+        "x": 697.853841552575,
+        "y": 381.6973232594668
       }
     }
   ]
