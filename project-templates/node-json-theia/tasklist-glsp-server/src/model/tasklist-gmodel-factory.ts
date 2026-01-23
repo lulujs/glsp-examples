@@ -76,8 +76,6 @@ export class TaskListGModelFactory implements GModelFactory {
 
         switch (task.type) {
             case TaskType.TASK:
-            case TaskType.START:
-            case TaskType.END:
                 // 矩形节点：上下左右4个ports
                 ports.push(
                     this.createPort(task.id, '_top', centerX, 0, TaskListTypes.RECTANGULAR_PORT),
@@ -86,6 +84,57 @@ export class TaskListGModelFactory implements GModelFactory {
                     this.createPort(task.id, '_left', 0, centerY, TaskListTypes.RECTANGULAR_PORT)
                 );
                 break;
+
+            case TaskType.START:
+            case TaskType.END: {
+                // 开始和结束节点：8个方向的ports（上、右上、右、右下、下、左下、左、左上）
+                // 端口大小为10x10，需要让端口完全贴合在节点边缘
+                const portSize = 5; // 端口半径
+
+                // 上 - 端口底边贴合节点顶边
+                const startEndTopX = centerX;
+                const startEndTopY = -portSize + 3;
+
+                // 右上 - 端口左下角贴合节点右上角附近
+                const startEndTopRightX = size.width * 0.85;
+                const startEndTopRightY = size.height * 0.15 - portSize;
+
+                // 右 - 端口左边贴合节点右边
+                const startEndRightX = size.width;
+                const startEndRightY = centerY;
+
+                // 右下 - 端口左上角贴合节点右下角附近
+                const startEndBottomRightX = size.width * 0.85;
+                const startEndBottomRightY = size.height * 0.85 + 5;
+
+                // 下 - 端口顶边贴合节点底边
+                const startEndBottomX = centerX;
+                const startEndBottomY = size.height;
+
+                // 左下 - 端口右上角贴合节点左下角附近
+                const startEndBottomLeftX = size.width * 0.15 - portSize;
+                const startEndBottomLeftY = size.height * 0.85 + 5;
+
+                // 左 - 端口右边贴合节点左边
+                const startEndLeftX = -portSize + 4;
+                const startEndLeftY = centerY;
+
+                // 左上 - 端口右下角贴合节点左上角附近
+                const startEndTopLeftX = size.width * 0.15 - portSize;
+                const startEndTopLeftY = size.height * 0.15 - portSize;
+
+                ports.push(
+                    this.createPort(task.id, '_top', startEndTopX, startEndTopY, TaskListTypes.RECTANGULAR_PORT),
+                    this.createPort(task.id, '_top_right', startEndTopRightX, startEndTopRightY, TaskListTypes.RECTANGULAR_PORT),
+                    this.createPort(task.id, '_right', startEndRightX, startEndRightY, TaskListTypes.RECTANGULAR_PORT),
+                    this.createPort(task.id, '_bottom_right', startEndBottomRightX, startEndBottomRightY, TaskListTypes.RECTANGULAR_PORT),
+                    this.createPort(task.id, '_bottom', startEndBottomX, startEndBottomY, TaskListTypes.RECTANGULAR_PORT),
+                    this.createPort(task.id, '_bottom_left', startEndBottomLeftX, startEndBottomLeftY, TaskListTypes.RECTANGULAR_PORT),
+                    this.createPort(task.id, '_left', startEndLeftX, startEndLeftY, TaskListTypes.RECTANGULAR_PORT),
+                    this.createPort(task.id, '_top_left', startEndTopLeftX, startEndTopLeftY, TaskListTypes.RECTANGULAR_PORT)
+                );
+                break;
+            }
 
             case TaskType.DECISION: {
                 // 菱形节点：4个顶点上的ports
